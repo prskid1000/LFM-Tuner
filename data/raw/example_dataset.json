@@ -1,0 +1,14 @@
+[
+  {
+    "instruction": "What is machine learning?",
+    "response": "Machine learning is a subset of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed. It uses algorithms to analyze data, identify patterns, and make predictions or decisions."
+  },
+  {
+    "instruction": "Explain neural networks in simple terms.",
+    "response": "Neural networks are computing systems inspired by biological neural networks. They consist of interconnected nodes (neurons) organized in layers. Information flows through these layers, with each connection having a weight that adjusts during training to improve the network's ability to make accurate predictions."
+  },
+  {
+    "instruction": "What is fine-tuning in the context of language models?",
+    "response": "Fine-tuning is the process of adapting a pre-trained language model to a specific task or domain by training it further on a smaller, task-specific dataset. This allows the model to leverage its general knowledge while specializing for particular use cases."
+  }
+]
