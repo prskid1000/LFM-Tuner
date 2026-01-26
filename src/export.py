@@ -1,120 +1,21 @@
 """
 Export Module
 Handles exporting fine-tuned models in multiple formats (LoRA, merged, GGUF)
+
+Note: GGUF export uses llama.cpp directly (not Unsloth) for Windows compatibility
 """
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
-from unsloth import FastLanguageModel
-import torch
+from typing import Dict, Any, Optional, Tuple
 import subprocess
 import sys
-
+import shutil
 
 logger = logging.getLogger(__name__)
 
-
-def _patch_unsloth_gguf_export():
-    """
-    Monkey patch Unsloth's GGUF export to ignore MSVC warnings.
-    
-    Unsloth treats MSVC compiler warnings (C4996, C4244, C4267, etc.) as build failures,
-    even though the build succeeds. This patch makes the error detection more lenient.
-    """
-    cleanups = []
-    
-    try:
-        # Patch 1: Patch subprocess.run globally during GGUF export
-        original_run = subprocess.run
-        
-        def patched_subprocess_run(*run_args, **run_kwargs):
-            """Patched subprocess.run that filters MSVC warnings"""
-            result = original_run(*run_args, **run_kwargs)
-            
-            # Check for MSVC warning-only failures
-            if result.returncode != 0:
-                stderr_text = ""
-                stdout_text = ""
-                
-                if hasattr(result, 'stderr') and result.stderr:
-                    if isinstance(result.stderr, bytes):
-                        stderr_text = result.stderr.decode('utf-8', errors='ignore')
-                    elif isinstance(result.stderr, str):
-                        stderr_text = result.stderr
-                
-                if hasattr(result, 'stdout') and result.stdout:
-                    if isinstance(result.stdout, bytes):
-                        stdout_text = result.stdout.decode('utf-8', errors='ignore')
-                    elif isinstance(result.stdout, str):
-                        stdout_text = result.stdout
-                
-                combined_output = stderr_text + "\n" + stdout_text
-                
-                # Check if this is a warning-only failure
-                has_msvc_warnings = any(w in combined_output for w in ['warning C4', 'warning C5', 'warning:', 'Warning:'])
-                has_deprecation = 'deprecated' in combined_output.lower() and 'isatty' in combined_output
-                has_actual_errors = ('error C' in combined_output or 
-                                    'error LNK' in combined_output or 
-                                    'fatal error' in combined_output.lower() or
-                                    'Error:' in combined_output and 'warning' not in combined_output.lower())
-                
-                # Check if build actually succeeded (libraries were created)
-                build_artifacts = ('.lib' in combined_output or 
-                                 '.vcxproj ->' in combined_output or 
-                                 'llama.lib' in combined_output or
-                                 'llama.vcxproj' in combined_output)
-                
-                # If we have warnings/deprecation but no actual errors AND build artifacts exist, override
-                if (has_msvc_warnings or has_deprecation) and not has_actual_errors and build_artifacts:
-                    logger.info("✓ Build completed with MSVC warnings (ignored)")
-                    result.returncode = 0
-            
-            return result
-        
-        subprocess.run = patched_subprocess_run
-        cleanups.append(lambda: setattr(subprocess, 'run', original_run))
-        logger.info("✓ Applied subprocess.run patch for MSVC warnings")
-        
-    except Exception as e:
-        logger.warning(f"Could not patch subprocess.run: {e}")
-    
-    try:
-        # Patch 2: Patch unsloth_zoo's command execution
-        import unsloth_zoo.saving_utils as saving_utils
-        
-        if hasattr(saving_utils, 'check_output'):
-            original_check = saving_utils.check_output
-            
-            def patched_check(*args, **kwargs):
-                """Patched check_output"""
-                try:
-                    return original_check(*args, **kwargs)
-                except Exception as e:
-                    error_str = str(e)
-                    # If error contains warnings but build succeeded, suppress
-                    if ('warning C4' in error_str or 'deprecated' in error_str) and '.lib' in error_str:
-                        logger.info("Suppressed warning-based error")
-                        return ""
-                    raise
-            
-            saving_utils.check_output = patched_check
-            cleanups.append(lambda: setattr(saving_utils, 'check_output', original_check))
-            logger.info("✓ Applied check_output patch")
-            
-    except Exception as e:
-        logger.debug(f"Could not patch check_output: {e}")
-    
-    # Return cleanup function
-    def cleanup_all():
-        for cleanup_fn in cleanups:
-            try:
-                cleanup_fn()
-            except:
-                pass
-    
-    return cleanup_all
-
+# llama.cpp location (relative to project root)
+LLAMA_CPP_DIR = Path(__file__).parent.parent / "notebooks" / "llama.cpp"
 
 def save_lora(
     model,
@@ -185,6 +86,175 @@ def merge_and_save(
     logger.info("Merged 16-bit model saved")
 
 
+def check_llama_cpp() -> Tuple[bool, Optional[Path], Optional[Path]]:
+    """
+    Check if llama.cpp is installed and built
+    
+    Returns:
+        Tuple of (is_ready, quantize_exe, convert_script)
+    """
+    if not LLAMA_CPP_DIR.exists():
+        return False, None, None
+    
+    # Check for quantizer (Windows or Unix)
+    quantize_exe = None
+    for possible_path in [
+        LLAMA_CPP_DIR / "build" / "bin" / "Release" / "llama-quantize.exe",  # Windows
+        LLAMA_CPP_DIR / "build" / "bin" / "llama-quantize",  # Unix
+        LLAMA_CPP_DIR / "llama-quantize",  # Unix (direct build)
+    ]:
+        if possible_path.exists():
+            quantize_exe = possible_path
+            break
+    
+    # Check for converter script
+    convert_script = LLAMA_CPP_DIR / "convert_hf_to_gguf.py"
+    
+    is_ready = quantize_exe is not None and convert_script.exists()
+    return is_ready, quantize_exe, convert_script
+
+
+def build_llama_cpp() -> bool:
+    """
+    Clone and build llama.cpp
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    logger.info("=" * 70)
+    logger.info("Setting up llama.cpp for GGUF conversion")
+    logger.info("=" * 70)
+    
+    # Clone if needed
+    if not LLAMA_CPP_DIR.exists():
+        logger.info(f"Cloning llama.cpp to {LLAMA_CPP_DIR}...")
+        try:
+            subprocess.run(
+                ["git", "clone", "https://github.com/ggerganov/llama.cpp.git", str(LLAMA_CPP_DIR)],
+                check=True,
+                capture_output=True
+            )
+            logger.info("OK: llama.cpp cloned")
+        except Exception as e:
+            logger.error(f"Failed to clone llama.cpp: {e}")
+            return False
+    
+    # Build
+    build_dir = LLAMA_CPP_DIR / "build"
+    build_dir.mkdir(parents=True, exist_ok=True)
+    
+    logger.info("Building llama.cpp (this may take a few minutes)...")
+    
+    try:
+        # Configure with CMake
+        subprocess.run(
+            ["cmake", "..", "-G", "Visual Studio 17 2022", "-A", "x64"],
+            cwd=build_dir,
+            check=True,
+            capture_output=True
+        )
+        
+        # Build
+        result = subprocess.run(
+            ["cmake", "--build", ".", "--config", "Release", "-j", "8"],
+            cwd=build_dir,
+            capture_output=True,
+            text=True
+        )
+        
+        # Check if build succeeded (ignore MSVC warnings)
+        output = result.stdout + result.stderr
+        has_real_error = any(e in output for e in ['error C', 'error LNK', 'fatal error'])
+        build_succeeded = '.lib' in output or 'llama.lib' in output
+        
+        if result.returncode != 0 and has_real_error and not build_succeeded:
+            logger.error(f"Build failed: {result.stderr[:500]}")
+            return False
+        
+        logger.info("OK: llama.cpp built successfully")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to build llama.cpp: {e}")
+        return False
+
+
+def convert_to_gguf_direct(
+    model_dir: Path,
+    output_dir: Path,
+    quantize_exe: Path,
+    convert_script: Path,
+    quantization_methods: list = None
+) -> bool:
+    """
+    Convert model to GGUF using llama.cpp directly
+    
+    Args:
+        model_dir: Directory containing the merged 16-bit model
+        output_dir: Output directory for GGUF files
+        quantize_exe: Path to llama-quantize executable
+        convert_script: Path to convert_hf_to_gguf.py
+        quantization_methods: List of quantization methods (default: ["q4_k_m"])
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    if quantization_methods is None:
+        quantization_methods = ["q4_k_m"]
+    
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Step 1: Convert to FP16 GGUF
+    logger.info("[1/2] Converting to FP16 GGUF...")
+    fp16_gguf = output_dir / "model-fp16.gguf"
+    
+    try:
+        subprocess.run(
+            [sys.executable, str(convert_script), str(model_dir),
+             "--outfile", str(fp16_gguf), "--outtype", "f16"],
+            check=True,
+            capture_output=True
+        )
+        
+        if fp16_gguf.exists():
+            size_gb = fp16_gguf.stat().st_size / (1024**3)
+            logger.info(f"OK: Created {fp16_gguf.name} ({size_gb:.2f} GB)")
+        else:
+            logger.error("FP16 GGUF file not created")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Failed to convert to FP16 GGUF: {e}")
+        return False
+    
+    # Step 2: Quantize
+    logger.info(f"[2/2] Quantizing to {quantization_methods}...")
+    
+    for method in quantization_methods:
+        quant_gguf = output_dir / f"model-{method}.gguf"
+        logger.info(f"  Creating {method.upper()} quantization...")
+        
+        try:
+            subprocess.run(
+                [str(quantize_exe), str(fp16_gguf), str(quant_gguf), method],
+                check=True,
+                capture_output=True
+            )
+            
+            if quant_gguf.exists():
+                size_gb = quant_gguf.stat().st_size / (1024**3)
+                logger.info(f"  OK: Created {quant_gguf.name} ({size_gb:.2f} GB)")
+            else:
+                logger.warning(f"  Quantized file not created: {method}")
+                
+        except Exception as e:
+            logger.error(f"  Failed to quantize {method}: {e}")
+    
+    logger.info("GGUF conversion completed")
+    return True
+
+
 def export_to_gguf(
     model,
     tokenizer,
@@ -193,7 +263,10 @@ def export_to_gguf(
     model_name: str = "model"
 ) -> None:
     """
-    Export model to GGUF format (if enabled in config)
+    Export model to GGUF format using llama.cpp directly
+    
+    This bypasses Unsloth's GGUF export (which has issues on Windows) and
+    uses llama.cpp tools directly for reliable conversion.
     
     Args:
         model: Trained model
@@ -206,39 +279,50 @@ def export_to_gguf(
         logger.info("GGUF export disabled in config, skipping")
         return
     
-    try:
-        from unsloth import is_bfloat16_supported
-    except ImportError:
-        logger.warning("GGUF export requires unsloth with GGUF support")
+    logger.info("=" * 70)
+    logger.info("GGUF Export (using llama.cpp directly)")
+    logger.info("=" * 70)
+    
+    # Check if llama.cpp is ready
+    is_ready, quantize_exe, convert_script = check_llama_cpp()
+    
+    if not is_ready:
+        logger.info("llama.cpp not found or not built, setting up...")
+        if not build_llama_cpp():
+            logger.error("Failed to setup llama.cpp, skipping GGUF export")
+            logger.info("You can manually build it by running: notebooks/build_llama_cpp.py")
+            return
+        
+        # Re-check
+        is_ready, quantize_exe, convert_script = check_llama_cpp()
+        if not is_ready:
+            logger.error("llama.cpp build completed but tools not found")
+            return
+    
+    logger.info("OK: llama.cpp is ready")
+    logger.info(f"  Quantizer: {quantize_exe}")
+    logger.info(f"  Converter: {convert_script}")
+    
+    # Ensure merged 16-bit model exists
+    merged_dir = Path(output_dir) / "merged_16bit"
+    if not merged_dir.exists():
+        logger.error(f"Merged model not found at {merged_dir}")
+        logger.error("Run merge_and_save() first before GGUF export")
         return
     
+    # Convert to GGUF
     gguf_dir = Path(output_dir) / "gguf"
-    gguf_dir.mkdir(parents=True, exist_ok=True)
+    quantization_methods = config.get('export', {}).get('gguf_quantization_methods', ["q4_k_m"])
     
-    logger.info(f"Exporting to GGUF format: {gguf_dir}")
+    convert_to_gguf_direct(
+        model_dir=merged_dir,
+        output_dir=gguf_dir,
+        quantize_exe=quantize_exe,
+        convert_script=convert_script,
+        quantization_methods=quantization_methods
+    )
     
-    # Merge if needed
-    if hasattr(model, 'merge_and_unload'):
-        model = model.merge_and_unload()
-    
-    # Monkey patch Unsloth's error detection to ignore MSVC warnings
-    cleanup = _patch_unsloth_gguf_export()
-    
-    # Export to GGUF
-    try:
-        model.save_pretrained_gguf(
-            str(gguf_dir),
-            tokenizer,
-            quantization_method="q4_k_m"  # 4-bit quantization for GGUF
-        )
-        logger.info("GGUF model exported successfully")
-    except Exception as e:
-        logger.error(f"Failed to export GGUF: {e}")
-        logger.info("You may need to use llama.cpp directly for GGUF export")
-    finally:
-        # Restore original subprocess.run
-        if cleanup:
-            cleanup()
+    logger.info("=" * 70)
 
 
 def export_all(

@@ -12,3 +12,8 @@ jupyter>=1.0.0
 # sage-attn - Install via install_windows.bat (pre-built wheel)
 # bitsandbytes - Only if using 4-bit/8-bit quantization
 # triton-windows - Optional optimization
+# llama-cpp-python - For GGUF export (Windows compatible)
+# cmake - For GGUF export (Windows compatible)
+# Visual Studio 2022 with C++ tools - For GGUF export (Windows compatible)
+# CMake 3.15+ - For GGUF export (Windows compatible)
+# Visual Studio 2022 with C++ tools - For GGUF export (Windows compatible)

@@ -79,12 +79,28 @@ lm_studio:
   temperature: 0.7
   timeout: 60
 
+# Evaluation Configuration
+# Settings for testing and evaluating saved models
+evaluation:
+  # GGUF model settings (llama-cpp-python)
+  gguf_n_ctx: 2048          # Context window size for GGUF (lower = more stable)
+  gguf_n_batch: 512         # Batch size for prompt processing
+  gguf_max_prompt_length: 1000  # Max prompt chars (~250 tokens)
+  
+  # General evaluation settings
+  num_samples: 10           # Number of samples to evaluate
+  max_new_tokens: 200       # Max tokens to generate per sample
+
 # Export Configuration
 # Enable/disable each format as needed
 export:
   export_lora: true       # Save LoRA adapter
   export_merged: true     # Merge and save 16-bit model
-  export_gguf: true     # Export to GGUF format
+  export_gguf: true       # Export to GGUF format (uses llama.cpp directly)
+  gguf_quantization_methods:  # GGUF quantization formats to generate
+    - "q4_k_m"            # 4-bit (recommended, good balance)
+    - "q5_k_m"            # 5-bit (better quality)
+    - "q8_0"              # 8-bit (high quality)
 
 # Output Configuration
 output:

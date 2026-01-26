@@ -1,16 +1,37 @@
 """
 Model Evaluation Module
 Handles loading and testing saved models in different formats
+Supports both HuggingFace models and GGUF models (via llama-cpp-python)
 """
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 import torch
 from unsloth import FastLanguageModel
 
-
 logger = logging.getLogger(__name__)
+
+# Try to import llama-cpp-python (optional)
+try:
+    from llama_cpp import Llama
+    LLAMA_CPP_AVAILABLE = True
+except ImportError:
+    LLAMA_CPP_AVAILABLE = False
+    logger.debug("llama-cpp-python not available")
+
+
+def is_gguf_model(model) -> bool:
+    """
+    Check if model is a GGUF model (llama-cpp-python)
+    
+    Args:
+        model: Model to check
+    
+    Returns:
+        True if GGUF model, False if HuggingFace model
+    """
+    return LLAMA_CPP_AVAILABLE and isinstance(model, Llama)
 
 
 def load_saved_model(
@@ -18,9 +39,11 @@ def load_saved_model(
     model_format: str = "lora",
     base_model_name: Optional[str] = None,
     config: Optional[Dict[str, Any]] = None
-):
+) -> tuple:
     """
     Load a saved model in different formats
+    
+    Supports HuggingFace models (lora, checkpoint, merged) and GGUF models
     
     Args:
         model_path: Path to saved model
@@ -30,6 +53,7 @@ def load_saved_model(
     
     Returns:
         Tuple of (model, tokenizer)
+        Note: For GGUF models, tokenizer will be None
     """
     logger.info(f"Loading model from: {model_path}")
     logger.info(f"Format: {model_format}")
@@ -81,11 +105,47 @@ def load_saved_model(
         FastLanguageModel.for_inference(model)
         
     elif model_format == "gguf":
-        raise NotImplementedError(
-            "GGUF evaluation requires llama-cpp-python. "
-            "Install with: pip install llama-cpp-python\n"
-            "Then use llama_cpp.Llama to load the model."
+        # Load GGUF model using llama-cpp-python
+        if not LLAMA_CPP_AVAILABLE:
+            raise ImportError(
+                "GGUF evaluation requires llama-cpp-python. "
+                "Install with: pip install llama-cpp-python"
+            )
+        
+        logger.info("Loading GGUF model with llama.cpp")
+        
+        # Find GGUF file
+        gguf_path = Path(model_path)
+        if gguf_path.is_dir():
+            # If directory provided, look for a GGUF file
+            gguf_files = list(gguf_path.glob("*.gguf"))
+            if not gguf_files:
+                raise FileNotFoundError(f"No GGUF files found in {gguf_path}")
+            gguf_path = gguf_files[0]  # Use first GGUF file
+            logger.info(f"Using GGUF file: {gguf_path.name}")
+        
+        # Load GGUF model with settings from config
+        # Get evaluation settings from config, with fallback defaults
+        eval_config = config.get('evaluation', {}) if config else {}
+        n_ctx = eval_config.get('gguf_n_ctx', 2048)
+        n_batch = eval_config.get('gguf_n_batch', 512)
+        
+        logger.info(f"GGUF settings: n_ctx={n_ctx}, n_batch={n_batch}")
+        
+        model = Llama(
+            model_path=str(gguf_path),
+            n_ctx=n_ctx,
+            n_threads=8,
+            n_gpu_layers=-1,  # Use all GPU layers if available
+            verbose=False,
+            n_batch=n_batch,
         )
+        
+        # GGUF models don't have a separate tokenizer
+        tokenizer = None
+        
+        logger.info("✓ GGUF model loaded successfully")
+        return model, tokenizer
     
     else:
         raise ValueError(f"Unsupported model format: {model_format}")
@@ -102,22 +162,72 @@ def generate_text(
     temperature: float = 0.7,
     top_p: float = 0.9,
     top_k: int = 50,
+    config: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Generate text from a prompt
     
+    Supports both HuggingFace models and GGUF models (llama-cpp-python)
+    
     Args:
-        model: Loaded model
-        tokenizer: Tokenizer
+        model: Loaded model (HuggingFace or Llama)
+        tokenizer: Tokenizer (None for GGUF models)
         prompt: Input prompt
         max_new_tokens: Maximum tokens to generate
         temperature: Sampling temperature
         top_p: Nucleus sampling parameter
         top_k: Top-k sampling parameter
+        config: Configuration dictionary (optional)
     
     Returns:
         Generated text
     """
+    # Check if it's a GGUF model (llama-cpp-python)
+    if is_gguf_model(model):
+        # Get max prompt length from config
+        eval_config = config.get('evaluation', {}) if config else {}
+        max_prompt_length = eval_config.get('gguf_max_prompt_length', 1000)
+        
+        # Truncate prompt if too long for GGUF
+        if len(prompt) > max_prompt_length:
+            logger.debug(f"Truncating prompt from {len(prompt)} to {max_prompt_length} chars")
+            prompt = prompt[:max_prompt_length]
+        
+        # Reset context before generation to avoid overflow
+        try:
+            model.reset()
+        except:
+            pass  # Some versions don't have reset()
+        
+        try:
+            # Use llama-cpp-python generation
+            output = model(
+                prompt,
+                max_tokens=max_new_tokens,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                echo=False  # Don't echo the prompt
+            )
+            return output['choices'][0]['text']
+        except RuntimeError as e:
+            if 'llama_decode' in str(e):
+                # Context overflow - try with even shorter prompt
+                logger.warning(f"Context overflow, retrying with shorter prompt")
+                short_prompt = prompt[:500]  # Very short
+                model.reset()
+                output = model(
+                    short_prompt,
+                    max_tokens=min(max_new_tokens, 100),  # Shorter generation too
+                    temperature=temperature,
+                    top_p=top_p,
+                    top_k=top_k,
+                    echo=False
+                )
+                return output['choices'][0]['text']
+            raise
+    
+    # HuggingFace model generation
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
     
     if torch.cuda.is_available():
@@ -143,22 +253,28 @@ def evaluate_on_dataset(
     tokenizer,
     dataset,
     num_samples: int = 10,
-    max_new_tokens: int = 200
+    max_new_tokens: int = 200,
+    config: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, str]]:
     """
     Evaluate model on a dataset
     
+    Supports both HuggingFace models and GGUF models (llama-cpp-python)
+    
     Args:
-        model: Loaded model
-        tokenizer: Tokenizer
+        model: Loaded model (HuggingFace or Llama)
+        tokenizer: Tokenizer (None for GGUF models)
         dataset: Dataset to evaluate on
         num_samples: Number of samples to test
         max_new_tokens: Maximum tokens to generate
+        config: Configuration dictionary (optional)
     
     Returns:
         List of evaluation results
     """
-    logger.info(f"Evaluating on {num_samples} samples...")
+    # Detect model type
+    model_type = "GGUF (llama.cpp)" if is_gguf_model(model) else "HuggingFace"
+    logger.info(f"Evaluating on {num_samples} samples using {model_type} model...")
     
     results = []
     samples_processed = 0
@@ -198,7 +314,8 @@ def evaluate_on_dataset(
                 model, 
                 tokenizer, 
                 input_text,
-                max_new_tokens=max_new_tokens
+                max_new_tokens=max_new_tokens,
+                config=config
             )
             
             results.append({
@@ -216,17 +333,24 @@ def evaluate_on_dataset(
     return results
 
 
-def interactive_test(model, tokenizer):
+def interactive_test(model, tokenizer, config: Optional[Dict[str, Any]] = None):
     """
     Interactive testing loop
     
+    Supports both HuggingFace models and GGUF models (llama-cpp-python)
+    
     Args:
-        model: Loaded model
-        tokenizer: Tokenizer
+        model: Loaded model (HuggingFace or Llama)
+        tokenizer: Tokenizer (None for GGUF models)
+        config: Configuration dictionary (optional)
     """
+    # Detect model type
+    model_type = "GGUF (llama.cpp)" if is_gguf_model(model) else "HuggingFace"
+    
     print("\n" + "="*70)
     print("Interactive Testing Mode")
     print("="*70)
+    print(f"Model type: {model_type}")
     print("Enter prompts to test the model. Type 'quit' to exit.\n")
     
     while True:
@@ -241,7 +365,7 @@ def interactive_test(model, tokenizer):
                 continue
             
             print("\nGenerating response...\n")
-            response = generate_text(model, tokenizer, prompt)
+            response = generate_text(model, tokenizer, prompt, config=config)
             
             print("="*70)
             print("Response:")

@@ -10,6 +10,7 @@ A comprehensive end-to-end fine-tuning framework using Unsloth with Flash Attent
 - **Dual Attention Support**: Flash Attention 2 or SAGE Attention (user choice, no fallback)
 - **12GB VRAM Optimized**: Automatic memory management and batch size tuning
 - **Configurable Export**: LoRA adapter, merged 16-bit, and GGUF formats
+- **Automatic GGUF Conversion**: Uses llama.cpp directly (auto-builds on first run, Windows compatible)
 - **Windows Optimized**: Pre-built wheels, automated installation scripts
 - **Flexible Dataset Input**: Supports JSON with multiple schemas
 
@@ -19,6 +20,8 @@ A comprehensive end-to-end fine-tuning framework using Unsloth with Flash Attent
 - Python 3.12 (recommended for pre-built wheels)
 - CUDA 13.0 toolkit
 - NVIDIA GPU with 12GB+ VRAM
+- Visual Studio 2022 with C++ tools (for GGUF export)
+- CMake 3.15+ (for GGUF export)
 - LM Studio (optional, for dataset generation)
 
 ## Quick Start
@@ -84,11 +87,12 @@ jupyter notebook notebooks\00_complete_pipeline.ipynb
 ```
 LFM-Tuner/
 ├── notebooks/          # Jupyter notebooks for workflow
+│   └── llama.cpp/     # Auto-cloned llama.cpp for GGUF export (Windows compatible)
 ├── src/               # Core modules
 │   ├── dataset_creation.py
 │   ├── dataset_preparation.py
 │   ├── training.py
-│   ├── export.py
+│   ├── export.py      # Includes automatic llama.cpp GGUF converter
 │   └── utils.py
 ├── configs/           # Configuration files
 │   ├── default_config.yaml  # Main config (pre-set for LFM 2.5 Thinking)
@@ -99,6 +103,10 @@ LFM-Tuner/
 │   ├── processed/    # Processed datasets
 │   └── generated/    # LM Studio generated data
 └── outputs/           # Training outputs and exports
+    └── exports/
+        ├── lora_adapter/   # LoRA weights only
+        ├── merged_16bit/   # Full 16-bit merged model
+        └── gguf/          # GGUF files (q4_k_m, q5_k_m, q8_0)
 ```
 
 ## Configuration
@@ -127,7 +135,11 @@ Enable/disable each format in config:
 export:
   export_lora: true      # LoRA adapter only
   export_merged: true    # Merged 16-bit model
-  export_gguf: true     # GGUF format (for local inference)
+  export_gguf: true      # GGUF format (for local inference)
+  gguf_quantization_methods:  # Customize quantization formats
+    - "q4_k_m"          # 4-bit (recommended, ~800MB)
+    - "q5_k_m"          # 5-bit (better quality, ~1GB)
+    - "q8_0"            # 8-bit (high quality, ~1.5GB)
 ```
 
 ## Dataset Format for LFM 2.5 Thinking
@@ -195,6 +207,13 @@ Make sure you ran `install.bat` and the installation succeeded. Check your confi
 - Ensure LM Studio is running
 - Check API server is enabled (Settings → Server)
 - Verify URL in config matches LM Studio port
+
+### GGUF Export Failed
+
+- **CMake not found**: Install CMake from https://cmake.org/download/
+- **Visual Studio not found**: Install VS 2022 Community with "Desktop development with C++"
+- **Build takes too long**: Normal on first run (2-5 minutes), llama.cpp is large
+- **Merged model not found**: Run Step 9 export cell to create merged_16bit first, then GGUF export will work
 
 ## LFM 2.5 Thinking Specific Notes
 
