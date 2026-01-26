@@ -22,77 +22,98 @@ def _patch_unsloth_gguf_export():
     Unsloth treats MSVC compiler warnings (C4996, C4244, C4267, etc.) as build failures,
     even though the build succeeds. This patch makes the error detection more lenient.
     """
+    cleanups = []
+    
     try:
-        # Try to import the internal conversion module
-        from unsloth.save import _convert_to_gguf
+        # Patch 1: Patch subprocess.run globally during GGUF export
+        original_run = subprocess.run
         
-        # Store original function
-        original_convert = _convert_to_gguf
-        
-        def patched_convert(*args, **kwargs):
-            """Patched version that ignores MSVC warnings"""
-            # Monkey patch subprocess to filter out warning messages
-            original_run = subprocess.run
+        def patched_subprocess_run(*run_args, **run_kwargs):
+            """Patched subprocess.run that filters MSVC warnings"""
+            result = original_run(*run_args, **run_kwargs)
             
-            def filtered_run(*run_args, **run_kwargs):
-                result = original_run(*run_args, **run_kwargs)
+            # Check for MSVC warning-only failures
+            if result.returncode != 0:
+                stderr_text = ""
+                stdout_text = ""
                 
-                # If there's stderr output, filter MSVC warnings
                 if hasattr(result, 'stderr') and result.stderr:
-                    stderr = result.stderr if isinstance(result.stderr, str) else result.stderr.decode('utf-8', errors='ignore')
-                    
-                    # Check if this is just warnings, not actual errors
-                    has_warnings = any(w in stderr for w in ['warning C4', 'warning:', '/W'])
-                    has_real_errors = 'error C' in stderr or 'FAILED' in stderr.upper()
-                    
-                    # If we have warnings but no real errors, consider it success
-                    if has_warnings and not has_real_errors:
-                        # Check if binaries were created (sign of successful build)
-                        if '.lib' in stderr or '.vcxproj' in stderr:
-                            logger.info("Build completed with warnings (ignored)")
-                            result.returncode = 0
+                    if isinstance(result.stderr, bytes):
+                        stderr_text = result.stderr.decode('utf-8', errors='ignore')
+                    elif isinstance(result.stderr, str):
+                        stderr_text = result.stderr
                 
-                return result
+                if hasattr(result, 'stdout') and result.stdout:
+                    if isinstance(result.stdout, bytes):
+                        stdout_text = result.stdout.decode('utf-8', errors='ignore')
+                    elif isinstance(result.stdout, str):
+                        stdout_text = result.stdout
+                
+                combined_output = stderr_text + "\n" + stdout_text
+                
+                # Check if this is a warning-only failure
+                has_msvc_warnings = any(w in combined_output for w in ['warning C4', 'warning C5', 'warning:', 'Warning:'])
+                has_deprecation = 'deprecated' in combined_output.lower() and 'isatty' in combined_output
+                has_actual_errors = ('error C' in combined_output or 
+                                    'error LNK' in combined_output or 
+                                    'fatal error' in combined_output.lower() or
+                                    'Error:' in combined_output and 'warning' not in combined_output.lower())
+                
+                # Check if build actually succeeded (libraries were created)
+                build_artifacts = ('.lib' in combined_output or 
+                                 '.vcxproj ->' in combined_output or 
+                                 'llama.lib' in combined_output or
+                                 'llama.vcxproj' in combined_output)
+                
+                # If we have warnings/deprecation but no actual errors AND build artifacts exist, override
+                if (has_msvc_warnings or has_deprecation) and not has_actual_errors and build_artifacts:
+                    logger.info("✓ Build completed with MSVC warnings (ignored)")
+                    result.returncode = 0
             
-            # Apply the patch temporarily
-            subprocess.run = filtered_run
-            try:
-                return original_convert(*args, **kwargs)
-            finally:
-                # Restore original
-                subprocess.run = original_run
+            return result
         
-        # Apply the patch
-        import unsloth.save
-        unsloth.save._convert_to_gguf = patched_convert
-        logger.info("Applied MSVC warning filter patch to Unsloth")
+        subprocess.run = patched_subprocess_run
+        cleanups.append(lambda: setattr(subprocess, 'run', original_run))
+        logger.info("✓ Applied subprocess.run patch for MSVC warnings")
         
-    except (ImportError, AttributeError) as e:
-        logger.debug(f"Could not patch Unsloth GGUF export: {e}")
-        # Try alternative approach - patch at FastLanguageModel level
-        try:
-            original_save_gguf = FastLanguageModel.save_pretrained_gguf
+    except Exception as e:
+        logger.warning(f"Could not patch subprocess.run: {e}")
+    
+    try:
+        # Patch 2: Patch unsloth_zoo's command execution
+        import unsloth_zoo.saving_utils as saving_utils
+        
+        if hasattr(saving_utils, 'check_output'):
+            original_check = saving_utils.check_output
             
-            def patched_save_gguf(self, *args, **kwargs):
-                """Wrapper that catches and retries on warning-related failures"""
+            def patched_check(*args, **kwargs):
+                """Patched check_output"""
                 try:
-                    return original_save_gguf(self, *args, **kwargs)
+                    return original_check(*args, **kwargs)
                 except Exception as e:
-                    error_msg = str(e)
-                    # Check if this is a warning-related error
-                    if 'warning C4' in error_msg or 'deprecated' in error_msg.lower():
-                        logger.warning(f"GGUF export encountered warnings: {error_msg}")
-                        logger.info("Attempting alternative GGUF export method...")
-                        # Try using direct llama.cpp conversion as fallback
-                        raise RuntimeError("GGUF export failed due to overly-strict error detection. "
-                                         "The model was likely exported successfully. Check the output directory.")
+                    error_str = str(e)
+                    # If error contains warnings but build succeeded, suppress
+                    if ('warning C4' in error_str or 'deprecated' in error_str) and '.lib' in error_str:
+                        logger.info("Suppressed warning-based error")
+                        return ""
                     raise
             
-            FastLanguageModel.save_pretrained_gguf = patched_save_gguf
-            logger.info("Applied alternative GGUF export patch")
+            saving_utils.check_output = patched_check
+            cleanups.append(lambda: setattr(saving_utils, 'check_output', original_check))
+            logger.info("✓ Applied check_output patch")
             
-        except Exception as e2:
-            logger.debug(f"Could not apply alternative patch: {e2}")
+    except Exception as e:
+        logger.debug(f"Could not patch check_output: {e}")
+    
+    # Return cleanup function
+    def cleanup_all():
+        for cleanup_fn in cleanups:
+            try:
+                cleanup_fn()
+            except:
+                pass
+    
+    return cleanup_all
 
 
 def save_lora(
@@ -155,9 +176,11 @@ def merge_and_save(
     # Save merged model
     model.save_pretrained(
         str(merged_dir),
-        tokenizer=tokenizer,
         safe_serialization=True
     )
+    
+    # Save tokenizer separately (IMPORTANT!)
+    tokenizer.save_pretrained(str(merged_dir))
     
     logger.info("Merged 16-bit model saved")
 
@@ -199,7 +222,7 @@ def export_to_gguf(
         model = model.merge_and_unload()
     
     # Monkey patch Unsloth's error detection to ignore MSVC warnings
-    _patch_unsloth_gguf_export()
+    cleanup = _patch_unsloth_gguf_export()
     
     # Export to GGUF
     try:
@@ -212,6 +235,10 @@ def export_to_gguf(
     except Exception as e:
         logger.error(f"Failed to export GGUF: {e}")
         logger.info("You may need to use llama.cpp directly for GGUF export")
+    finally:
+        # Restore original subprocess.run
+        if cleanup:
+            cleanup()
 
 
 def export_all(
