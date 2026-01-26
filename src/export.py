@@ -214,58 +214,6 @@ def export_to_gguf(
         logger.info("You may need to use llama.cpp directly for GGUF export")
 
 
-def evaluate_model(
-    model,
-    tokenizer,
-    test_dataset,
-    num_samples: int = 10
-) -> Dict[str, Any]:
-    """
-    Basic model evaluation
-    
-    Args:
-        model: Trained model
-        tokenizer: Tokenizer
-        test_dataset: Test dataset
-        num_samples: Number of samples to evaluate
-    
-    Returns:
-        Evaluation metrics dictionary
-    """
-    logger.info(f"Evaluating model on {num_samples} samples")
-    
-    model.eval()
-    results = {
-        "num_samples": num_samples,
-        "predictions": []
-    }
-    
-    with torch.no_grad():
-        for i, example in enumerate(test_dataset[:num_samples]):
-            if isinstance(example, dict) and 'text' in example:
-                # Simple generation test
-                inputs = tokenizer(example['text'], return_tensors="pt", truncation=True, max_length=512)
-                
-                if torch.cuda.is_available():
-                    inputs = {k: v.cuda() for k, v in inputs.items()}
-                
-                outputs = model.generate(
-                    **inputs,
-                    max_new_tokens=50,
-                    temperature=0.7,
-                    do_sample=True
-                )
-                
-                generated = tokenizer.decode(outputs[0], skip_special_tokens=True)
-                results["predictions"].append({
-                    "input": example['text'][:100],
-                    "output": generated[:200]
-                })
-    
-    logger.info("Evaluation completed")
-    return results
-
-
 def export_all(
     model,
     tokenizer,
