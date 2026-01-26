@@ -1,0 +1,96 @@
+# Default Configuration for LLM Fine-tuning Pipeline
+# Optimized for Windows + 12GB VRAM GPU
+
+# Model Configuration
+model:
+  name: "LiquidAI/LFM2.5-1.2B-Thinking"  # LFM 2.5 Thinking model
+  # Alternative LFM models:
+  # - "LiquidAI/LFM2.5-1.2B-Base"
+  # - "LiquidAI/LFM2.5-1.2B-Instruct"
+  trust_remote_code: false
+  hf_token: null  # Set your HuggingFace token if using gated models
+
+# Attention Backend Configuration
+# Choose ONE: 'flash_attention' or 'sageattention'
+# No fallback - must match installed packages
+# 
+# RECOMMENDATION for Windows + 12GB VRAM:
+# - Start with "sageattention" (universal support, easy install)
+# - Use "flash_attention" if you need maximum speed with Llama/Qwen/Mistral
+#
+attention_backend: "sageattention"  # Recommended: universal support
+# attention_backend: "flash_attention"  # Alternative: faster for Llama/Qwen/Mistral
+
+# Quantization Configuration
+# With Flash/SAGE Attention, 16-bit is often sufficient for smaller models
+# 4-bit/8-bit only needed for larger models or if model doesn't fit
+quantization:
+  load_in_4bit: false   # Requires bitsandbytes
+  load_in_8bit: false   # Requires bitsandbytes
+  load_in_16bit: true   # Default, no bitsandbytes needed
+
+# LoRA Configuration (optimized for 12GB VRAM)
+# For LFM 2.5 (small model), we can use higher rank for better performance
+lora:
+  r: 32                    # LoRA rank (higher for smaller models like LFM 2.5)
+  lora_alpha: 32          # LoRA alpha (typically 2x rank)
+  lora_dropout: 0         # LoRA dropout (0 is optimized)
+  bias: "none"            # Bias setting (none is optimized)
+  target_modules:         # Modules to apply LoRA to (LFM uses standard architecture)
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  use_gradient_checkpointing: "unsloth"  # Memory efficient
+  use_rslora: false       # Rank stabilized LoRA
+
+# Training Configuration (12GB VRAM optimized)
+# For LFM 2.5 (1.2B model), we can use longer sequences and larger batches
+training:
+  max_seq_length: 4096     # LFM supports long context (32k), but 4k is good for training
+  per_device_train_batch_size: 2  # LFM 2.5 is small, can use batch size 2
+  gradient_accumulation_steps: 4   # Effective batch size = 8
+  warmup_steps: 10
+  max_steps: 100          # Adjust based on your needs
+  logging_steps: 1
+  optim: "adamw_8bit"     # Memory efficient optimizer
+  seed: 3407
+  fp16: false             # Use bf16 if supported
+  bf16: false             # Better than fp16 if GPU supports
+  report_to: null         # Set to "wandb" or "tensorboard" if desired
+
+# Dataset Configuration
+dataset:
+  raw_path: "data/raw"
+  processed_path: "data/processed"
+  generated_path: "data/generated"
+  train_ratio: 0.9
+  val_ratio: 0.1
+  format_type: "chat"     # "chat" or "instruction"
+  model_type: "lfm"       # "llama", "qwen", "gemma", "lfm" - Set to "lfm" for LFM models
+
+# LM Studio Configuration (for dataset generation)
+lm_studio:
+  api_url: "http://localhost:1234"
+  max_tokens: 512
+  temperature: 0.7
+  timeout: 60
+
+# Export Configuration
+# Enable/disable each format as needed
+export:
+  export_lora: false       # Save LoRA adapter
+  export_merged: false     # Merge and save 16-bit model
+  export_gguf: true     # Export to GGUF format
+
+# Output Configuration
+output:
+  base_dir: "outputs"
+  checkpoint_dir: "checkpoints"
+  export_dir: "exports"
+
+# Full Fine-tuning (not recommended for 12GB VRAM)
+full_finetuning: false

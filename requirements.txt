@@ -1,0 +1,14 @@
+# Core Dependencies
+# Note: transformers, trl, datasets, accelerate are included with unsloth
+
+unsloth>=2024.12
+torch>=2.5.0  # Install with CUDA 13.0 via install_windows.bat
+pyyaml>=6.0
+requests>=2.31.0
+jupyter>=1.0.0
+
+# Optional Dependencies (install via install_windows.bat)
+# flash-attn - Install via install_windows.bat (pre-built wheel)
+# sage-attn - Install via install_windows.bat (pre-built wheel)
+# bitsandbytes - Only if using 4-bit/8-bit quantization
+# triton-windows - Optional optimization
