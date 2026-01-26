@@ -127,6 +127,30 @@ With Flash/SAGE Attention, **16-bit quantization is often sufficient** for small
 - **16-bit**: Default, no bitsandbytes needed
 - **4-bit/8-bit**: Only if model doesn't fit or for larger models (requires bitsandbytes)
 
+### Resumable Training
+
+Training can be resumed from any saved checkpoint:
+
+**Option A: Train from scratch**
+- Use when starting a new training run
+- Checkpoints saved to `outputs/training/checkpoint-N/`
+
+**Option B: Resume from checkpoint**
+- Continue training from a previous checkpoint
+- Useful for interrupted training or extending training steps
+- Automatically lists available checkpoints with step information
+
+```python
+# Resume from latest checkpoint
+checkpoints = sorted(output_dir.glob('checkpoint-*'))
+resume_checkpoint = checkpoints[-1]
+
+trainer = train_model(
+    model, tokenizer, train_dataset, val_dataset, config, output_dir,
+    resume_from_checkpoint=str(resume_checkpoint)
+)
+```
+
 ### Export Formats
 
 Enable/disable each format in config:

@@ -227,7 +227,8 @@ def train_model(
     train_dataset: Dataset,
     val_dataset: Optional[Dataset],
     config: Dict[str, Any],
-    output_dir: Path
+    output_dir: Path,
+    resume_from_checkpoint: Optional[str] = None
 ) -> SFTTrainer:
     """
     Train model using SFTTrainer
@@ -239,6 +240,7 @@ def train_model(
         val_dataset: Validation dataset (optional)
         config: Training configuration
         output_dir: Output directory for checkpoints
+        resume_from_checkpoint: Path to checkpoint to resume from (optional)
     
     Returns:
         Trainer object
@@ -279,6 +281,9 @@ def train_model(
     logger.info(f"Training steps: {training_args.max_steps}")
     logger.info(f"Output directory: {output_dir}")
     
+    if resume_from_checkpoint:
+        logger.info(f"Resuming from checkpoint: {resume_from_checkpoint}")
+    
     trainer = SFTTrainer(
         model=model,
         train_dataset=train_dataset,
@@ -287,8 +292,8 @@ def train_model(
         args=training_args,
     )
     
-    # Train
-    trainer.train()
+    # Train (with optional checkpoint resume)
+    trainer.train(resume_from_checkpoint=resume_from_checkpoint)
     
     logger.info("Training completed")
     return trainer
