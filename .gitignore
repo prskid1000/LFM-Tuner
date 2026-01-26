@@ -79,3 +79,6 @@ wandb/
 # TensorBoard
 runs/
 tensorboard/
+
+
+**/unsloth_compiled_cache/
