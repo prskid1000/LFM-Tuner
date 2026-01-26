@@ -15,10 +15,11 @@ from trl import SFTTrainer, SFTConfig
 from datasets import Dataset
 from src.utils import validate_attention_backend, validate_bitsandbytes, get_gpu_memory_info
 
-os.environ["HF_DATASETS_DISABLE_PROGRESS_BARS"] = "1"
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["HF_DATASETS_NUM_PROC"] = "1"
-
+_original_map = Dataset.map
+def _patched_map(self, *args, **kwargs):
+    kwargs['num_proc'] = None
+    return _original_map(self, *args, **kwargs)
+Dataset.map = _patched_map
 
 logger = logging.getLogger(__name__)
 
