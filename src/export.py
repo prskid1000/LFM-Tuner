@@ -68,7 +68,7 @@ def merge_and_save(
     logger.info(f"Merging LoRA weights and saving to: {merged_dir}")
     
     # Merge LoRA weights
-    model = FastLanguageModel.merge_and_unload(model)
+    model = model.merge_and_unload()
     
     # Save merged model
     model.save_pretrained(
@@ -114,7 +114,7 @@ def export_to_gguf(
     
     # Merge if needed
     if hasattr(model, 'merge_and_unload'):
-        model = FastLanguageModel.merge_and_unload(model)
+        model = model.merge_and_unload()
     
     # Export to GGUF
     try:

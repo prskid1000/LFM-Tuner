@@ -127,7 +127,7 @@ Enable/disable each format in config:
 export:
   export_lora: true      # LoRA adapter only
   export_merged: true    # Merged 16-bit model
-  export_gguf: false     # GGUF format (for local inference)
+  export_gguf: true     # GGUF format (for local inference)
 ```
 
 ## Dataset Format for LFM 2.5 Thinking

@@ -54,7 +54,7 @@ training:
   per_device_train_batch_size: 2  # LFM 2.5 is small, can use batch size 2
   gradient_accumulation_steps: 4   # Effective batch size = 8
   warmup_steps: 10
-  max_steps: 100          # Adjust based on your needs
+  max_steps: 1000          # Adjust based on your needs
   logging_steps: 1
   optim: "adamw_8bit"     # Memory efficient optimizer
   seed: 3407
@@ -82,8 +82,8 @@ lm_studio:
 # Export Configuration
 # Enable/disable each format as needed
 export:
-  export_lora: false       # Save LoRA adapter
-  export_merged: false     # Merge and save 16-bit model
+  export_lora: true       # Save LoRA adapter
+  export_merged: true     # Merge and save 16-bit model
   export_gguf: true     # Export to GGUF format
 
 # Output Configuration
