@@ -5,6 +5,8 @@ Supports Flash Attention 2 and SAGE Attention
 """
 
 import logging
+import os
+import sys
 import torch
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
@@ -12,6 +14,10 @@ from unsloth import FastLanguageModel, FastModel
 from trl import SFTTrainer, SFTConfig
 from datasets import Dataset
 from src.utils import validate_attention_backend, validate_bitsandbytes, get_gpu_memory_info
+
+os.environ["HF_DATASETS_DISABLE_PROGRESS_BARS"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["HF_DATASETS_NUM_PROC"] = "1"
 
 
 logger = logging.getLogger(__name__)
@@ -261,6 +267,8 @@ def train_model(
         fp16=training_config.get('fp16', False),
         bf16=training_config.get('bf16', False),
         report_to=training_config.get('report_to', None),
+        dataloader_num_workers=0,
+        dataset_num_proc=1,
     )
     
     # Add validation dataset if provided
