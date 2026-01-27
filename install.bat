@@ -13,6 +13,27 @@ if not exist ".venv" (
     exit /b 1
 )
 
+REM Install core requirements
+echo [5/6] Installing core requirements...
+if exist "requirements.txt" (
+    .venv\Scripts\python.exe -m pip install -r requirements.txt
+    if not %errorlevel% == 0 (
+        echo ERROR: Failed to install core requirements
+        pause
+        exit /b 1
+    )
+    echo SUCCESS: Core requirements installed
+) else (
+    echo WARNING: requirements.txt not found, installing minimal requirements...
+    .venv\Scripts\python.exe -m pip install unsloth pyyaml requests jupyter
+    if not %errorlevel% == 0 (
+        echo ERROR: Failed to install minimal requirements
+        pause
+        exit /b 1
+    )
+)
+echo.
+
 REM Install wheel first (required for flash-attn)
 echo Installing wheel (required for flash-attn)...
 .venv\Scripts\python.exe -m pip install --upgrade pip wheel
@@ -66,27 +87,6 @@ if not %errorlevel% == 0 (
     echo WARNING: Failed to install Triton (optional, continuing...)
 ) else (
     echo SUCCESS: Triton installed
-)
-echo.
-
-REM Install core requirements
-echo [5/6] Installing core requirements...
-if exist "requirements.txt" (
-    .venv\Scripts\python.exe -m pip install -r requirements.txt
-    if not %errorlevel% == 0 (
-        echo ERROR: Failed to install core requirements
-        pause
-        exit /b 1
-    )
-    echo SUCCESS: Core requirements installed
-) else (
-    echo WARNING: requirements.txt not found, installing minimal requirements...
-    .venv\Scripts\python.exe -m pip install unsloth pyyaml requests jupyter
-    if not %errorlevel% == 0 (
-        echo ERROR: Failed to install minimal requirements
-        pause
-        exit /b 1
-    )
 )
 echo.
 
