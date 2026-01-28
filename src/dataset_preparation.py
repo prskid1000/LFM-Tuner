@@ -1,6 +1,9 @@
 """
 Dataset Preparation Module
-Converts datasets to Unsloth-compatible format and validates data
+Converts datasets to Unsloth-compatible format using tokenizer's chat template
+
+All input data must be in messages format:
+[{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
 """
 
 import logging
@@ -15,39 +18,87 @@ logger = logging.getLogger(__name__)
 
 def convert_to_unsloth_format(
     data: List[Dict[str, Any]],
-    model_type: str = "llama",
-    format_type: str = "chat",
+    tokenizer,
     save_path: Optional[Path] = None,
     save_format: str = "json"
 ) -> List[Dict[str, Any]]:
     """
-    Convert dataset to Unsloth-compatible format
+    Convert dataset to Unsloth-compatible format using tokenizer's chat template
+    
+    Input data must be in messages format. Each example should have a 'messages' key
+    containing a list of message dictionaries with 'role' and 'content' keys.
+    
+    Example input format:
+    {
+        "messages": [
+            {"role": "user", "content": "What is Python?"},
+            {"role": "assistant", "content": "Python is a programming language..."}
+        ]
+    }
     
     Args:
-        data: Raw dataset examples
-        model_type: Model type ('llama', 'qwen', 'gemma', 'lfm')
-        format_type: Format type ('chat', 'instruction')
+        data: List of examples, each with a 'messages' key containing list of message dicts
+        tokenizer: Tokenizer with apply_chat_template method (from the model)
         save_path: Optional path to save converted data (default: data/processed/converted_dataset.json)
         save_format: Format to save ('json' or 'jsonl')
     
     Returns:
-        Converted dataset
+        Converted dataset with 'text' field formatted using tokenizer's chat template
     """
+    if tokenizer is None:
+        raise ValueError("tokenizer is required. Load the model first to get the tokenizer.")
+    
+    if not hasattr(tokenizer, 'apply_chat_template'):
+        raise ValueError("tokenizer must have apply_chat_template method. Use a proper model tokenizer.")
+    
     converted = []
-    schema = detect_schema(data)
     
-    logger.info(f"Converting dataset from {schema} to {format_type} format for {model_type}")
+    logger.info(f"Converting {len(data)} examples using tokenizer's chat template")
     
-    for example in data:
-        if format_type == "chat":
-            converted_example = convert_to_chat_format(example, model_type, schema)
-        elif format_type == "instruction":
-            converted_example = convert_to_instruction_format(example, model_type, schema)
-        else:
-            raise ValueError(f"Unknown format type: {format_type}")
+    for i, example in enumerate(data):
+        # Extract messages from example
+        messages = example.get('messages', example.get('conversations', []))
         
-        if converted_example:
-            converted.append(converted_example)
+        if not messages:
+            logger.warning(f"Example {i} has no 'messages' key, skipping")
+            continue
+        
+        if not isinstance(messages, list):
+            logger.warning(f"Example {i} has invalid messages format (not a list), skipping")
+            continue
+        
+        # Validate and normalize messages format
+        normalized_messages = []
+        for msg in messages:
+            if not isinstance(msg, dict):
+                logger.warning(f"Example {i} has invalid message (not a dict), skipping")
+                break
+            if 'role' not in msg or 'content' not in msg:
+                logger.warning(f"Example {i} has message missing 'role' or 'content', skipping")
+                break
+            if not msg.get('content', '').strip():
+                continue  # Skip empty messages
+            normalized_messages.append({
+                "role": msg['role'],
+                "content": msg['content'].strip()
+            })
+        else:
+            # Only process if we didn't break (all messages valid)
+            if not normalized_messages:
+                logger.warning(f"Example {i} has no valid messages after normalization, skipping")
+                continue
+            
+            # Use tokenizer's apply_chat_template to format according to model's native format
+            try:
+                text = tokenizer.apply_chat_template(
+                    normalized_messages,
+                    tokenize=False,
+                    add_generation_prompt=False
+                )
+                converted.append({"text": text})
+            except Exception as e:
+                logger.warning(f"Failed to apply chat template to example {i}: {e}")
+                continue
     
     logger.info(f"Converted {len(data)} -> {len(converted)} examples")
     
@@ -59,191 +110,6 @@ def convert_to_unsloth_format(
     _save_dataset_single(converted, save_path, format=save_format)
     
     return converted
-
-
-def detect_schema(data: List[Dict[str, Any]]) -> str:
-    """Detect dataset schema"""
-    if not data:
-        return "unknown"
-    
-    sample = data[0]
-    keys = set(sample.keys())
-    
-    if 'instruction' in keys and 'response' in keys:
-        return 'instruction'
-    if 'messages' in keys or 'conversations' in keys:
-        return 'chat'
-    if 'prompt' in keys and 'completion' in keys:
-        return 'completion'
-    if 'text' in keys:
-        return 'text'
-    
-    return 'unknown'
-
-
-def convert_to_chat_format(
-    example: Dict[str, Any],
-    model_type: str,
-    source_schema: str
-) -> Optional[Dict[str, str]]:
-    """Convert example to chat format"""
-    messages = []
-    
-    if source_schema == 'chat':
-        messages = example.get('messages', example.get('conversations', []))
-        if not isinstance(messages, list):
-            messages = [messages]
-    
-    elif source_schema == 'instruction':
-        instruction = example.get('instruction', '')
-        response = example.get('response', example.get('output', ''))
-        
-        messages = [
-            {"role": "user", "content": instruction},
-            {"role": "assistant", "content": response}
-        ]
-    
-    elif source_schema == 'completion':
-        prompt = example.get('prompt', '')
-        completion = example.get('completion', example.get('response', ''))
-        
-        messages = [
-            {"role": "user", "content": prompt},
-            {"role": "assistant", "content": completion}
-        ]
-    
-    elif source_schema == 'text':
-        text = example.get('text', '')
-        # Simple split (can be improved)
-        messages = [
-            {"role": "user", "content": text[:len(text)//2]},
-            {"role": "assistant", "content": text[len(text)//2:]}
-        ]
-    
-    if not messages:
-        return None
-    
-    # Format according to model type
-    if model_type in ['llama', 'qwen', 'gemma', 'lfm']:
-        # Standard chat format
-        text = format_chat_messages(messages, model_type)
-        return {"text": text}
-    
-    return None
-
-
-def convert_to_instruction_format(
-    example: Dict[str, Any],
-    model_type: str,
-    source_schema: str
-) -> Optional[Dict[str, str]]:
-    """Convert example to instruction format"""
-    instruction = ""
-    response = ""
-    
-    if source_schema == 'instruction':
-        instruction = example.get('instruction', '')
-        response = example.get('response', example.get('output', ''))
-    
-    elif source_schema == 'chat':
-        messages = example.get('messages', example.get('conversations', []))
-        if isinstance(messages, list) and len(messages) >= 2:
-            instruction = messages[-2].get('content', '')
-            response = messages[-1].get('content', '')
-    
-    elif source_schema == 'completion':
-        instruction = example.get('prompt', '')
-        response = example.get('completion', example.get('response', ''))
-    
-    if not instruction or not response:
-        return None
-    
-    # Format according to model type
-    if model_type in ['llama', 'qwen', 'gemma', 'lfm']:
-        text = format_instruction(instruction, response, model_type)
-        return {"text": text}
-    
-    return None
-
-
-def format_chat_messages(messages: List[Dict[str, str]], model_type: str) -> str:
-    """Format messages for chat template"""
-    if model_type == "llama":
-        # Llama 3 format
-        formatted = []
-        for msg in messages:
-            role = msg.get('role', 'user')
-            content = msg.get('content', '')
-            if role == 'user':
-                formatted.append(f"<|user|>\n{content}<|end|>\n")
-            elif role == 'assistant':
-                formatted.append(f"<|assistant|>\n{content}<|end|>\n")
-        return "".join(formatted)
-    
-    elif model_type == "qwen":
-        # Qwen format
-        formatted = []
-        for msg in messages:
-            role = msg.get('role', 'user')
-            content = msg.get('content', '')
-            formatted.append(f"<|im_start|>{role}\n{content}<|im_end|>\n")
-        return "".join(formatted)
-    
-    else:
-        # Generic format
-        formatted = []
-        for msg in messages:
-            role = msg.get('role', 'user')
-            content = msg.get('content', '')
-            formatted.append(f"{role.capitalize()}: {content}\n")
-        return "".join(formatted)
-
-
-def format_instruction(instruction: str, response: str, model_type: str) -> str:
-    """Format instruction-response pair"""
-    if model_type == "llama":
-        return f"<|user|>\n{instruction}<|end|>\n<|assistant|>\n{response}<|end|>\n"
-    elif model_type == "qwen":
-        return f"<|im_start|>user\n{instruction}<|im_end|>\n<|im_start|>assistant\n{response}<|im_end|>\n"
-    else:
-        return f"### Instruction:\n{instruction}\n\n### Response:\n{response}\n"
-
-
-def validate_dataset(
-    data: List[Dict[str, Any]],
-    required_keys: Optional[List[str]] = None
-) -> Tuple[bool, List[str]]:
-    """
-    Validate dataset format and quality
-    
-    Returns:
-        (is_valid, list_of_errors)
-    """
-    errors = []
-    
-    if not data:
-        errors.append("Dataset is empty")
-        return False, errors
-    
-    if required_keys:
-        sample = data[0]
-        for key in required_keys:
-            if key not in sample:
-                errors.append(f"Missing required key: {key}")
-    
-    # Check for empty examples
-    empty_count = 0
-    for i, example in enumerate(data):
-        if 'text' in example:
-            if not example['text'] or len(example['text'].strip()) == 0:
-                empty_count += 1
-                errors.append(f"Empty text in example {i}")
-    
-    if empty_count > 0:
-        logger.warning(f"Found {empty_count} empty examples")
-    
-    is_valid = len(errors) == 0
-    return is_valid, errors
 
 
 def split_dataset(
@@ -300,11 +166,22 @@ def preview_tokenization(
     tokenizer,
     num_examples: int = 3
 ) -> None:
-    """Preview tokenization of examples"""
+    """
+    Preview tokenization of examples
+    
+    Args:
+        examples: List of examples with 'text' field (already formatted)
+        tokenizer: Tokenizer to use for tokenization
+        num_examples: Number of examples to preview
+    """
     logger.info(f"Previewing tokenization for {num_examples} examples:")
     
     for i, example in enumerate(examples[:num_examples]):
         text = example.get('text', '')
+        if not text:
+            logger.warning(f"Example {i+1} has no text field")
+            continue
+            
         tokens = tokenizer(text, return_tensors="pt")
         token_count = tokens['input_ids'].shape[1]
         

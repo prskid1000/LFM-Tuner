@@ -157,7 +157,7 @@ def load_saved_model(
 def generate_text(
     model,
     tokenizer,
-    prompt: str,
+    messages: List[Dict[str, str]],
     max_new_tokens: int = 200,
     temperature: float = 0.7,
     top_p: float = 0.9,
@@ -165,14 +165,14 @@ def generate_text(
     config: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
-    Generate text from a prompt
+    Generate text from messages using tokenizer's chat template
     
     Supports both HuggingFace models and GGUF models (llama-cpp-python)
     
     Args:
         model: Loaded model (HuggingFace or Llama)
         tokenizer: Tokenizer (None for GGUF models)
-        prompt: Input prompt
+        messages: Messages list [{"role": "user", "content": "..."}]
         max_new_tokens: Maximum tokens to generate
         temperature: Sampling temperature
         top_p: Nucleus sampling parameter
@@ -182,6 +182,16 @@ def generate_text(
     Returns:
         Generated text
     """
+    # Format messages using tokenizer's chat template
+    if tokenizer and hasattr(tokenizer, 'apply_chat_template'):
+        prompt = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True  # Add generation prompt for inference
+        )
+    else:
+        # GGUF models - convert messages to simple string format
+        prompt = "\n".join([f"{m.get('role', 'user')}: {m.get('content', '')}" for m in messages])
     # Check if it's a GGUF model (llama-cpp-python)
     if is_gguf_model(model):
         # Get max prompt length from config
@@ -228,6 +238,7 @@ def generate_text(
             raise
     
     # HuggingFace model generation
+    # Prompt is already formatted with chat template if messages were provided
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
     
     if torch.cuda.is_available():
@@ -244,8 +255,11 @@ def generate_text(
             pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id
         )
     
-    generated = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return generated
+    # Decode only the newly generated tokens (not the input prompt)
+    input_length = inputs['input_ids'].shape[1]
+    generated_ids = outputs[0][input_length:]
+    generated = tokenizer.decode(generated_ids, skip_special_tokens=True)
+    return generated.strip()
 
 
 def evaluate_on_dataset(
@@ -257,20 +271,21 @@ def evaluate_on_dataset(
     config: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, str]]:
     """
-    Evaluate model on a dataset
+    Evaluate model on a dataset in messages format
     
     Supports both HuggingFace models and GGUF models (llama-cpp-python)
+    Uses tokenizer's chat template to format prompts correctly (same as training)
     
     Args:
         model: Loaded model (HuggingFace or Llama)
         tokenizer: Tokenizer (None for GGUF models)
-        dataset: Dataset to evaluate on
+        dataset: Dataset to evaluate on (must have 'messages' key with messages format)
         num_samples: Number of samples to test
         max_new_tokens: Maximum tokens to generate
         config: Configuration dictionary (optional)
     
     Returns:
-        List of evaluation results
+        List of evaluation results with 'input', 'expected', and 'output' fields
     """
     # Detect model type
     model_type = "GGUF (llama.cpp)" if is_gguf_model(model) else "HuggingFace"
@@ -283,44 +298,43 @@ def evaluate_on_dataset(
         try:
             example = dataset[i]
             
-            # Extract input text
-            input_text = None
-            if isinstance(example, dict):
-                if 'text' in example:
-                    # For text format, extract the input part
-                    text = example['text']
-                    # Try to find the first user message or prompt
-                    if '<|im_start|>user' in text:
-                        input_text = text.split('<|im_start|>user')[1].split('<|im_end|>')[0].strip()
-                    elif 'Question:' in text:
-                        input_text = text.split('Question:')[1].split('Answer:')[0].strip()
-                    else:
-                        input_text = text[:500]  # First 500 chars as fallback
-                        
-                elif 'messages' in example:
-                    # Extract user message from chat format
-                    messages = example['messages']
-                    if isinstance(messages, list):
-                        user_msg = next((m for m in messages if m.get('role') == 'user'), None)
-                        if user_msg:
-                            input_text = user_msg.get('content', '')
-            
-            if not input_text:
-                logger.debug(f"Skipping sample {i}: no input found")
+            # Validate format
+            if not isinstance(example, dict) or 'messages' not in example:
+                logger.warning(f"Sample {i}: missing 'messages' key, skipping")
                 continue
             
-            # Generate response
+            messages = example['messages']
+            if not isinstance(messages, list) or len(messages) == 0:
+                logger.warning(f"Sample {i}: invalid messages format, skipping")
+                continue
+            
+            # Extract user message(s) and expected assistant response
+            user_messages = [m for m in messages if m.get('role') == 'user']
+            assistant_messages = [m for m in messages if m.get('role') == 'assistant']
+            
+            if not user_messages:
+                logger.warning(f"Sample {i}: no user message found, skipping")
+                continue
+            
+            user_message = user_messages[-1].get('content', '')
+            expected_response = assistant_messages[-1].get('content', '') if assistant_messages else ""
+            
+            # Create prompt messages (only user messages, exclude assistant response)
+            prompt_messages = [m for m in messages if m.get('role') != 'assistant']
+            
+            # Generate response using messages format (formatted with chat template)
             generated = generate_text(
                 model, 
                 tokenizer, 
-                input_text,
+                prompt_messages,
                 max_new_tokens=max_new_tokens,
                 config=config
             )
             
             results.append({
                 "sample_id": i,
-                "input": input_text,
+                "input": user_message,
+                "expected": expected_response,
                 "output": generated
             })
             samples_processed += 1
@@ -333,9 +347,41 @@ def evaluate_on_dataset(
     return results
 
 
+def print_evaluation_results(results: List[Dict[str, str]], num_to_print: int = 5):
+    """
+    Print evaluation results in a readable format showing expected vs actual
+    
+    Args:
+        results: List of evaluation results from evaluate_on_dataset()
+        num_to_print: Number of results to print (default: 5)
+    """
+    print("\n" + "="*80)
+    print("EVALUATION RESULTS")
+    print("="*80)
+    
+    for i, result in enumerate(results[:num_to_print]):
+        print(f"\n--- Sample {result.get('sample_id', i)} ---")
+        print(f"\nInput:")
+        print(f"  {result.get('input', 'N/A')}")
+        
+        if result.get('expected'):
+            print(f"\nExpected:")
+            print(f"  {result['expected']}")
+        
+        print(f"\nGenerated:")
+        print(f"  {result.get('output', 'N/A')}")
+        print("-"*80)
+    
+    if len(results) > num_to_print:
+        print(f"\n... and {len(results) - num_to_print} more samples")
+    
+    print(f"\nTotal samples evaluated: {len(results)}")
+    print("="*80 + "\n")
+
+
 def interactive_test(model, tokenizer, config: Optional[Dict[str, Any]] = None):
     """
-    Interactive testing loop
+    Interactive testing loop using messages format
     
     Supports both HuggingFace models and GGUF models (llama-cpp-python)
     
@@ -351,24 +397,27 @@ def interactive_test(model, tokenizer, config: Optional[Dict[str, Any]] = None):
     print("Interactive Testing Mode")
     print("="*70)
     print(f"Model type: {model_type}")
-    print("Enter prompts to test the model. Type 'quit' to exit.\n")
+    print("Enter user messages to test the model. Type 'quit' to exit.\n")
     
     while True:
         try:
-            prompt = input("Prompt: ").strip()
+            user_input = input("User: ").strip()
             
-            if prompt.lower() in ['quit', 'exit', 'q']:
+            if user_input.lower() in ['quit', 'exit', 'q']:
                 print("Exiting interactive mode...")
                 break
             
-            if not prompt:
+            if not user_input:
                 continue
             
+            # Create messages format
+            messages = [{"role": "user", "content": user_input}]
+            
             print("\nGenerating response...\n")
-            response = generate_text(model, tokenizer, prompt, config=config)
+            response = generate_text(model, tokenizer, messages, config=config)
             
             print("="*70)
-            print("Response:")
+            print("Assistant:")
             print("-"*70)
             print(response)
             print("="*70)

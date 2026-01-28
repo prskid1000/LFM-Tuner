@@ -1,58 +1,2402 @@
 [
   {
-    "instruction": "I need to find a product called 'Coca Cola 500ml' and add it to a manual order with quantity 10.",
-    "response": "Let me think through this step by step:\n\n1. First, I need to search for the product 'Coca Cola 500ml' using the product search tool\n2. The search will look for products matching 'Coca Cola 500ml' in the products entity\n3. Once I find the product, I need to navigate to the Add Manual Order screen\n4. I'll use the searchProductsAndNavigateToAddManualOrder tool with:\n   - productSearches: [{\"query\": \"Coca Cola 500ml\", \"quantity\": 10}]\n5. This will search for the product and automatically navigate to the order screen with the product and quantity pre-filled\n\nLet me execute this: I'll call searchProductsAndNavigateToAddManualOrder with the product query and quantity."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Shyam General Store."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Okay, adding Shyam General Store as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Shyam General Store\"}}}"
+      }
+    ]
   },
   {
-    "instruction": "Search for customer 'ABC Company' and add them as an off-route customer, then navigate to van sales with products 'Water Bottle' (qty 5) and 'Bread' (qty 2).",
-    "response": "Let me break this down into steps:\n\n1. First, I need to search for the customer 'ABC Company' in the deliveryPoints entity\n2. Then I need to search for two products: 'Water Bottle' and 'Bread'\n3. I need to add the customer as an off-route site visit\n4. Finally, navigate to the van sales screen with the products and quantities\n\nI'll use the addOffRouteCustomerAndNavigateToVanSales tool which does all of this:\n- customerQuery: \"ABC Company\"\n- productSearches: [\n    {\"query\": \"Water Bottle\", \"quantity\": 5},\n    {\"query\": \"Bread\", \"quantity\": 2}\n  ]\n\nThis tool will:\n1. Search for the customer\n2. Search for both products\n3. Add the customer as off-route\n4. Navigate to van sales with all the products and quantities"
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create an offroute visit for Gupta Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Sure, creating an off-route visit for Gupta Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Gupta Stores\"}}}"
+      }
+    ]
   },
   {
-    "instruction": "Find products matching 'milk' and show me the top 3 results.",
-    "response": "I need to search for products containing 'milk'. Let me think about this:\n\n1. I'll use the search tool to query the 'products' entity\n2. The search will look for products where the code or handheldDescription contains 'milk'\n3. I'll limit the results to the top 3 matches\n4. The search uses fuzzy matching, so it will find variations like 'whole milk', 'skim milk', 'milk carton', etc.\n\nI'll execute: executeSearchTool(query=\"milk\", entity=\"products\", limit=3)\n\nThis will return the top 3 most relevant product matches with their codes, descriptions, and relevance scores."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 12 Pepsi 500ml and 6 Mirinda 500ml to Ramesh Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales for Ramesh Traders with the requested items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Ramesh Traders\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":12},{\"product\":\"Mirinda 500ml\",\"qty\":6}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "I want to search for multiple things: find customer 'John's Store', product 'Chips', and product 'Soda'. Get 2 results for each product.",
-    "response": "This requires multiple searches across different entities. Let me plan this:\n\n1. I need to search for one customer: 'John's Store' in deliveryPoints\n2. I need to search for two products: 'Chips' and 'Soda' in products\n3. Each product search should return 2 results\n\nI'll use the executeMultiSearchTool with:\n- searches: [\n    {\"query\": \"John's Store\", \"entity\": \"deliveryPoints\", \"limit\": 1},\n    {\"query\": \"Chips\", \"entity\": \"products\", \"limit\": 2},\n    {\"query\": \"Soda\", \"entity\": \"products\", \"limit\": 2}\n  ]\n\nThis will execute all three searches in parallel and return:\n- Customer search results for 'John's Store'\n- Top 2 product matches for 'Chips'\n- Top 2 product matches for 'Soda'"
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do a van sale for Sita Stores with Coke 500ml qty 8."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to van sales with Coca Cola added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sita Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":8}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "Navigate to the van sales screen.",
-    "response": "To navigate to the van sales screen, I need to:\n\n1. Use the navigation tool to find the van sales screen\n2. The screen name should match 'van sales' or 'vansales'\n3. Once found, navigate to that screen\n\nI'll use navigateToScreen with:\n- screenName: \"van sales\"\n- params: {}\n\nThe tool will:\n1. Search for screens matching 'van sales' using fuzzy matching\n2. Find the correct route name\n3. Navigate to that screen\n\nNote: If you need to navigate with products, use addOffRouteCustomerAndNavigateToVanSales or searchProductsAndNavigateToAddManualOrder instead."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 3 damaged Sprite 500ml from Mahesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing the return for Mahesh Shop.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Mahesh Shop\",\"returnItems\":[{\"product\":\"Sprite 500ml\",\"qty\":3}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "I need to create an order with 3 different products: 'Pizza' (5 units), 'Pasta' (3 units), and 'Salad' (2 units).",
-    "response": "I need to create a manual order with multiple products. Let me think through this:\n\n1. I have 3 products with different quantities:\n   - Pizza: 5 units\n   - Pasta: 3 units\n   - Salad: 2 units\n\n2. I'll use searchProductsAndNavigateToAddManualOrder tool which will:\n   - Search for all three products\n   - Navigate to the Add Manual Order screen\n   - Pre-fill the products with their quantities\n\n3. The tool call will be:\n   - productSearches: [\n       {\"query\": \"Pizza\", \"quantity\": 5},\n       {\"query\": \"Pasta\", \"quantity\": 3},\n       {\"query\": \"Salad\", \"quantity\": 2}\n     ]\n\nThis will search for each product, find the best matches, and set up the order screen with all products and quantities ready for confirmation."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 2 bottles of Thums Up 500ml from City Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen with the selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"City Mart\",\"returnItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":2}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "Find a customer by account number '12345' and then search for product 'Beer'.",
-    "response": "I need to perform two separate searches. Let me plan this:\n\n1. First search: Find customer with account number '12345'\n   - Entity: deliveryPoints (customers)\n   - Query: '12345'\n   - The search will look in accountNumber field\n\n2. Second search: Find product 'Beer'\n   - Entity: products\n   - Query: 'Beer'\n   - The search will look in code and handheldDescription fields\n\nI can do these sequentially:\n1. executeSearchTool(query=\"12345\", entity=\"deliveryPoints\", limit=1)\n2. executeSearchTool(query=\"Beer\", entity=\"products\", limit=1)\n\nOr use multi-search to do both at once:\nexecuteMultiSearchTool([\n  {\"query\": \"12345\", \"entity\": \"deliveryPoints\", \"limit\": 1},\n  {\"query\": \"Beer\", \"entity\": \"products\", \"limit\": 1}\n])\n\nThe multi-search approach is more efficient as it runs both searches in parallel."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full pending cash from Neha Enterprises."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting the full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Neha Enterprises\",\"amount\":\"FULL\"}}}"
+      }
+    ]
   },
   {
-    "instruction": "What's the best way to add a new off-route customer and start a van sales transaction with products?",
-    "response": "For adding an off-route customer and starting van sales, here's the best approach:\n\n1. I need to:\n   - Find the customer\n   - Add them as an off-route site visit\n   - Search for the products\n   - Navigate to van sales with everything set up\n\n2. The most efficient way is to use the addOffRouteCustomerAndNavigateToVanSales tool, which does all of this in one operation:\n   - It searches for the customer\n   - It searches for all products\n   - It adds the customer as off-route (creating a siteVisitId)\n   - It navigates to van sales with products and quantities pre-filled\n\n3. Example usage:\n   addOffRouteCustomerAndNavigateToVanSales(\n     customerQuery: \"Customer Name\",\n     productSearches: [\n       {\"query\": \"Product 1\", \"quantity\": 5},\n       {\"query\": \"Product 2\", \"quantity\": 3}\n     ]\n   )\n\nThis is better than doing separate steps because it:\n- Reduces the number of tool calls\n- Ensures the customer is added before navigation\n- Pre-fills all product information automatically"
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take 1500 cash from Rahul Agencies."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}"
+      }
+    ]
   },
   {
-    "instruction": "Search for 'Coca Cola' but I'm not sure if it's spelled 'Coca Cola' or 'Coke'. Also find 'Pepsi'.",
-    "response": "The search tool uses fuzzy matching, so it can handle spelling variations. Let me think about this:\n\n1. For 'Coca Cola' vs 'Coke':\n   - The fuzzy search will find matches for both spellings\n   - I can search with 'Coca Cola' and it should also find products with 'Coke' if they're similar enough\n   - Or I could search with 'Coke' and it might find 'Coca Cola'\n\n2. I need to search for two products:\n   - 'Coca Cola' (or 'Coke')\n   - 'Pepsi'\n\n3. Best approach: Use multi-search to find both:\n   executeMultiSearchTool([\n     {\"query\": \"Coca Cola\", \"entity\": \"products\", \"limit\": 3},\n     {\"query\": \"Pepsi\", \"entity\": \"products\", \"limit\": 3}\n   ])\n\n4. The fuzzy matching will:\n   - Find products matching 'Coca Cola', 'Coke', 'Coca-Cola', etc.\n   - Find products matching 'Pepsi', 'Pepsi Cola', etc.\n   - Return the most relevant matches with scores\n\nThis way I get results for both products even if the spelling isn't exact."
+    "messages": [
+      {
+        "role": "user",
+        "content": "What's the fastest way to finish my route today?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Try prioritizing nearby customers first and avoid off-route stops unless necessary. Want me to help optimize the route?\"}"
+      }
+    ]
   },
   {
-    "instruction": "I need to find a customer and create a manual order. The customer name is 'Smith Grocery' and I want to order 'Milk' (10 units) and 'Eggs' (12 units).",
-    "response": "I need to handle this in steps since there's no single tool that does customer search + manual order. Let me think:\n\n1. First, I should search for the customer 'Smith Grocery' to verify they exist\n2. Then, I'll create the manual order with the products\n\nHowever, for creating a manual order, I don't necessarily need the customer first - the order screen might allow selecting the customer later.\n\nBest approach:\n1. Option A: Just create the order (customer can be selected on the order screen)\n   - Use searchProductsAndNavigateToAddManualOrder with:\n     productSearches: [\n       {\"query\": \"Milk\", \"quantity\": 10},\n       {\"query\": \"Eggs\", \"quantity\": 12}\n     ]\n\n2. Option B: Search customer first for verification, then create order\n   - First: executeSearchTool(query=\"Smith Grocery\", entity=\"deliveryPoints\", limit=1)\n   - Then: searchProductsAndNavigateToAddManualOrder with the products\n\nI'll go with Option A since the order screen likely has customer selection, and this is more efficient. If customer verification is critical, I can do Option B."
+    "messages": [
+      {
+        "role": "user",
+        "content": "How many customers are left on my route?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}"
+      }
+    ]
   },
   {
-    "instruction": "How do I search for multiple products at once?",
-    "response": "To search for multiple products at once, you have two options:\n\n1. **Multi-Search Tool** (for just searching, no navigation):\n   - Use executeMultiSearchTool\n   - Pass an array of search queries\n   - Each can have different entities (products, customers, etc.)\n   - Example:\n     executeMultiSearchTool([\n       {\"query\": \"Milk\", \"entity\": \"products\", \"limit\": 3},\n       {\"query\": \"Bread\", \"entity\": \"products\", \"limit\": 3}\n     ])\n\n2. **Navigation Tools** (for searching + navigating):\n   - searchProductsAndNavigateToAddManualOrder: searches products and goes to order screen\n   - addOffRouteCustomerAndNavigateToVanSales: searches customer + products and goes to van sales\n   - These tools accept productSearches array with multiple products\n\nFor just searching (no navigation), use option 1. For searching and then navigating to a screen with results, use option 2.\n\nThe multi-search runs all searches in parallel, which is faster than doing them one by one."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Lays Classic 30g qty 40."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load with Lays Classic added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Lays Classic 30g\",\"qty\":40}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "Find the customer 'ABC Corp' and add 5 units of 'Water' to their van sales.",
-    "response": "I need to add a product to van sales for a specific customer. Let me think about the steps:\n\n1. I need to find customer 'ABC Corp'\n2. I need to add them as an off-route customer (to create a site visit)\n3. I need to search for product 'Water'\n4. I need to navigate to van sales with the product and quantity\n\nThis is exactly what addOffRouteCustomerAndNavigateToVanSales does:\n- customerQuery: \"ABC Corp\"\n- productSearches: [{\"query\": \"Water\", \"quantity\": 5}]\n\nThe tool will:\n1. Search for 'ABC Corp' in deliveryPoints\n2. Search for 'Water' in products\n3. Add the customer as off-route (creates siteVisitId)\n4. Navigate to van sales screen with:\n   - siteVisitId (linked to the customer)\n   - Product search results\n   - Quantity: 5\n\nThis sets up everything needed for the van sales transaction."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Load 15 bottles of Pepsi 1L into the van manually."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Starting a manual load with Pepsi bottles.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Pepsi 1L\",\"qty\":15}]}}}"
+      }
+    ]
   },
   {
-    "instruction": "I want to search for 'Pizza' but I'm looking for frozen pizza specifically. How should I search?",
-    "response": "For a more specific search like 'frozen pizza', I should:\n\n1. Use a more specific query: 'frozen pizza' instead of just 'pizza'\n2. The fuzzy search will match products containing both words\n3. I can also try variations if needed\n\nLet me think about the search strategy:\n\nOption 1: Search with full phrase\n- Query: \"frozen pizza\"\n- This will find products where both 'frozen' and 'pizza' appear\n- The search looks in code and handheldDescription fields\n\nOption 2: Search with just 'pizza' and filter results\n- Query: \"pizza\"\n- Get more results, then manually check descriptions\n- Less efficient but might find variations\n\nI'll use Option 1 with executeSearchTool:\n- query: \"frozen pizza\"\n- entity: \"products\"\n- limit: 5 (to see top matches)\n\nThe fuzzy matching will find products like:\n- 'Frozen Pizza 12 inch'\n- 'Pizza Frozen'\n- 'Frozen Italian Pizza'\n- etc.\n\nIf results aren't good, I can try 'pizza frozen' or just 'frozen' to see all frozen items."
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Arjun Stores, shop is closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping Arjun Stores for today.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Arjun Stores\",\"reason\":\"shop closed\"}}}"
+      }
+    ]
   },
   {
-    "instruction": "Explain how the search tool handles different spellings and variations of product names.",
-    "response": "The search tool uses fuzzy matching with several features to handle variations:\n\n1. **Fuzzy Matching Algorithm**:\n   - Uses Fuse.js library with configurable threshold (0.3 for products)\n   - Lower threshold = stricter matching\n   - Higher threshold = more lenient matching\n\n2. **Case Insensitive**:\n   - All searches are normalized to lowercase\n   - 'COCA COLA' and 'coca cola' will match the same products\n\n3. **Word Splitting**:\n   - Handles camelCase: 'productCode' becomes 'product code'\n   - Handles snake_case: 'product_code' becomes 'product code'\n   - Handles kebab-case: 'product-code' becomes 'product code'\n   - This helps match even if formatting differs\n\n4. **Partial Matching**:\n   - 'Cola' will find 'Coca Cola', 'Pepsi Cola', etc.\n   - 'Milk' will find 'Whole Milk', 'Skim Milk', 'Milk Carton', etc.\n\n5. **Minimum Match Length**:\n   - Requires at least 3 characters for products\n   - Prevents too many false matches on short queries\n\n6. **Scoring**:\n   - Returns relevance scores (0 = perfect match, 1 = no match)\n   - Results sorted by best match first\n\nExample: Searching 'coke' might find:\n- 'Coca Cola' (score: 0.2 - very close)\n- 'Coke Zero' (score: 0.1 - exact match)\n- 'Pepsi' (score: 0.8 - less relevant)"
+    "messages": [
+      {
+        "role": "user",
+        "content": "Mark Vijay Traders as skipped due to owner not available."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer visit skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vijay Traders\",\"reason\":\"owner not available\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery screen for Kiran Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Kiran Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to review delivery details for Mohan Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to the delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mohan Shop\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 25 Coke 500ml bottles at warehouse."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen with selected products.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":25}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 10 packs of damaged Lays Cream & Onion."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with specified damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Lays Cream & Onion\",\"qty\":10}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is my vehicle stock enough for the rest of the day?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can help check that — want me to review current stock versus remaining deliveries?\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remind me to unload at end of day."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged items from my vehicle."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Loading all damaged stock for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Clear all damaged products from the van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen with all damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute Rahul Stores and sell 10 Coke 500ml, collect full cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding off-route visit and preparing sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rahul Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Meena Shop, sell Sprite 500ml qty 6 and take full payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up the complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Meena Shop\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 2 Pepsi 500ml from Aman Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return for Aman Traders.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Aman Traders\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 5 Thums Up 500ml to Aman Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Aman Traders\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":5}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 900 cash from Aman Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Prefilling cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Aman Traders\",\"amount\":900}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Aman Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Aman Traders\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "How do I handle partial payments?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can enter the exact cash amount collected, and the remaining balance will stay pending.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What happens if I skip too many customers?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Lucky Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Lucky Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Lucky Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create an offroute visit for New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit is being created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"New Rajesh Shop\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 20 bottles of Bisleri 1L to Lucky Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales with Bisleri added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Lucky Stores\",\"saleItems\":[{\"product\":\"Bisleri 1L\",\"qty\":20}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do a van sale of 4 Maaza 600ml for New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"New Rajesh Shop\",\"saleItems\":[{\"product\":\"Maaza 600ml\",\"qty\":4}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 1 damaged Coke 2L from Lucky Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 6 expired Pepsi 500ml from New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"New Rajesh Shop\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full payment from Lucky Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding balance.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Lucky Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take 2200 cash from New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"New Rajesh Shop\",\"amount\":2200}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is it okay to collect cash before confirming delivery?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, you can collect cash anytime before final delivery confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Why is off-route used instead of normal visit?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route is used when the customer is not part of today’s planned route.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add a manual load of Kurkure Masala Munch qty 30."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load with Kurkure added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Masala Munch\",\"qty\":30}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 18 bottles of Slice 1L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Slice 1L\",\"qty\":18}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Om Traders due to shop renovation."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Mark Suresh Stores as skipped, customer not available."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Suresh Stores\",\"reason\":\"customer not available\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Om Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Show me delivery confirmation for Suresh Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Suresh Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 12 bottles of Sprite 2L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Sprite 2L\",\"qty\":12}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 7 packets of Bingo Tedhe Medhe."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bingo Tedhe Medhe\",\"qty\":7}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What if I forget to unload items?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can unload anytime before closing the route for the day.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I undo a skip?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, as long as the route is still active, skipped visits can be revisited.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged stock now."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Gathering all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Clear damaged items from vehicle inventory."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen with damaged stock.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute customer Vinayak Stores, sell 6 Coke 500ml and collect full cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute for Shree Ganesh Mart, sell Pepsi 500ml qty 10 and take payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Shree Ganesh Mart\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 3 Frooti 200ml from Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing product return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Vinayak Stores\",\"returnItems\":[{\"product\":\"Frooti 200ml\",\"qty\":3}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 2 bottles of Limca 1L to Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 500 cash from Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Vinayak Stores\",\"amount\":500}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinayak Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does the app save progress automatically?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, your progress is saved automatically at every step.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What happens if network drops?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can continue working offline — data will sync once connectivity is back.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Patel Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Patel Kirana as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Patel Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Raju General Store."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Raju General Store\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 10 bottles of Appy Fizz 500ml to Patel Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales with requested items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Patel Kirana\",\"saleItems\":[{\"product\":\"Appy Fizz 500ml\",\"qty\":10}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of Mountain Dew 500ml qty 6 for Raju General Store."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Raju General Store\",\"saleItems\":[{\"product\":\"Mountain Dew 500ml\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 expired Limca 500ml from Patel Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Patel Kirana\",\"returnItems\":[{\"product\":\"Limca 500ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 1 damaged Pepsi Black from Raju General Store."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Raju General Store\",\"returnItems\":[{\"product\":\"Pepsi Black\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from Patel Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 750 rupees from Raju General Store."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Raju General Store\",\"amount\":750}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I add products after opening van sales?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, you can edit or add products before final confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What does full cash mean?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Full cash means collecting the entire outstanding balance from the customer.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Dairy Milk 24g qty 50."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 20 bottles of Aquafina 1L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Aquafina 1L\",\"qty\":20}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Vinod Stores, customer not reachable."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping Vinod Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vinod Stores\",\"reason\":\"customer not reachable\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Ramesh Mart due to shop closed today."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Vinod Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to review delivery summary for Ramesh Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Mart\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 9 bottles of Slice 2L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Slice 2L\",\"qty\":9}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 14 packets of Good Day biscuits."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Biscuits\",\"qty\":14}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do I need to confirm delivery every time?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, delivery confirmation is required to complete each visit.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I load items after route start?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, manual load allows adding items anytime during the route.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged products now."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove all damaged stock from my van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged stock selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute Mahavir Stores, sell Pepsi 500ml qty 8 and collect full payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Mahavir Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Laxmi Mart, sell Coke 500ml qty 12 and take full cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Laxmi Mart\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":12}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 4 Fanta 500ml from Mahavir Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Mahavir Stores\",\"returnItems\":[{\"product\":\"Fanta 500ml\",\"qty\":4}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 6 bottles of Limca 500ml to Mahavir Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Mahavir Stores\",\"saleItems\":[{\"product\":\"Limca 500ml\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 1200 cash from Mahavir Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Mahavir Stores\",\"amount\":1200}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Mahavir Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mahavir Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What if customer gives less cash?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can enter the amount collected and the balance will remain pending.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I do return after sale?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, returns can be processed anytime before final confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer National Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding National Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"National Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route customer added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"City Super Mart\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 5 bottles of Sprite Zero 500ml to National Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"National Stores\",\"saleItems\":[{\"product\":\"Sprite Zero 500ml\",\"qty\":5}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 9 Thums Up 500ml for City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"City Super Mart\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":9}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 damaged Maaza 600ml from National Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"National Stores\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 3 expired Slice 500ml from City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"City Super Mart\",\"returnItems\":[{\"product\":\"Slice 500ml\",\"qty\":3}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from National Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"National Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take 1800 cash from City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"City Super Mart\",\"amount\":1800}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does app support partial delivery?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, partial deliveries are supported before final confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I change quantity later?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, quantities can be edited until you confirm the delivery.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Ganesh Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Ganesh Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Ganesh Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Sai Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sai Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 7 bottles of Coke 500ml to Ganesh Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Ganesh Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":7}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 3 Sprite 1L for Sai Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sai Kirana\",\"saleItems\":[{\"product\":\"Sprite 1L\",\"qty\":3}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 expired Pepsi 500ml from Ganesh Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing returns.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Ganesh Stores\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 1 damaged Fanta 2L from Sai Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sai Kirana\",\"returnItems\":[{\"product\":\"Fanta 2L\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from Ganesh Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding balance.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Ganesh Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take 640 cash from Sai Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Sai Kirana\",\"amount\":640}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I change payment mode later?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, payment details can be adjusted before final confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does return affect bill total?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, returned items reduce the final payable amount.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Kurkure Green Chutney qty 25."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Green Chutney\",\"qty\":25}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 10 bottles of Sting Energy Drink."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Radha Stores, shop closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Mahesh Kirana due to owner not available."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mahesh Kirana\",\"reason\":\"owner not available\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Radha Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Radha Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Show delivery confirmation for Mahesh Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mahesh Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 6 bottles of Pepsi 2L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Pepsi 2L\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 11 packets of Hide & Seek biscuits."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What if I unload wrong item?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can correct it before completing the unload process.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is unload mandatory daily?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Unload is required for damaged or excess stock, not always daily.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged stock."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove damaged inventory from van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute Shankar Stores, sell Coke 500ml qty 5 and collect full cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Shankar Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":5}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute for Pooja Mart, sell Sprite 500ml qty 9 and take payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing off-route sale.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Pooja Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":9}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 Maaza 1L from Shankar Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Shankar Stores\",\"returnItems\":[{\"product\":\"Maaza 1L\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 4 Limca 500ml to Shankar Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Shankar Stores\",\"saleItems\":[{\"product\":\"Limca 500ml\",\"qty\":4}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 900 cash from Shankar Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Shankar Stores\",\"amount\":900}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Shankar Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Shankar Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I skip payment collection?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, delivery can proceed with pending payment if allowed.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does composite save time?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, it combines multiple steps into one workflow.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Rathi Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Star Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Star Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 8 bottles of Pepsi 500ml to Rathi Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rathi Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 5 Sprite 500ml for Star Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Star Kirana\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":5}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 1 damaged Coke 1.25L from Rathi Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Rathi Stores\",\"returnItems\":[{\"product\":\"Coca Cola 1.25L\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 3 expired Pepsi 500ml from Star Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Star Kirana\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":3}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from Rathi Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rathi Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 1100 cash from Star Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Star Kirana\",\"amount\":1100}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is cash collection mandatory?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection depends on customer payment terms.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I do sales before adding offroute?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit is required before starting sales for unscheduled customers.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Parle-G 100g qty 60."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 24 bottles of Maaza 600ml."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Maaza 600ml\",\"qty\":24}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Gopal Stores due to shop closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Gopal Stores\",\"reason\":\"shop closed\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Ramesh Kirana because owner not available."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Kirana\",\"reason\":\"owner not available\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Gopal Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Gopal Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Open delivery confirmation for Ramesh Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 10 bottles of Limca 2L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Limca 2L\",\"qty\":10}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 5 cartons of Good Day Butter."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Butter\",\"qty\":5}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What if customer reopens later?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can revisit the customer if route is still active.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is manual load tracked?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, all manual loads are recorded against vehicle stock.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged items."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Clear damaged inventory from van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute customer Krishna Stores, sell Coke 500ml qty 6 and collect full payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Krishna Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Balaji Mart, sell Sprite 500ml qty 10 and take payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Balaji Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 Frooti 200ml from Krishna Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Krishna Stores\",\"returnItems\":[{\"product\":\"Frooti 200ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 3 bottles of Limca 500ml to Krishna Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Krishna Stores\",\"saleItems\":[{\"product\":\"Limca 500ml\",\"qty\":3}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 700 cash from Krishna Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Krishna Stores\",\"amount\":700}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Krishna Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Krishna Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does composite handle returns?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, composite workflows can include returns as well.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I edit composite before confirm?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Deepak Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Deepak Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Anjali Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 9 bottles of Thums Up 500ml to Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Deepak Stores\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":9}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 6 Coke Zero 500ml for Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Anjali Kirana\",\"saleItems\":[{\"product\":\"Coke Zero 500ml\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 damaged Sprite 1L from Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Deepak Stores\",\"returnItems\":[{\"product\":\"Sprite 1L\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 1 expired Maaza 600ml from Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Anjali Kirana\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 850 cash from Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I split payment?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, partial payments are supported.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does return require reason?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Providing a reason helps with accurate records.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Oreo Vanilla qty 40."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Oreo Vanilla\",\"qty\":40}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 16 bottles of 7Up 1L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"7Up 1L\",\"qty\":16}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip customer Nitin Stores due to shop closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Nitin Stores\",\"reason\":\"shop closed\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Mehul Kirana because owner not present."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mehul Kirana\",\"reason\":\"owner not present\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Nitin Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Nitin Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Open delivery confirmation for Mehul Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mehul Kirana\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 8 bottles of Pepsi 1.25L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Pepsi 1.25L\",\"qty\":8}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload 6 packets of Bourbon biscuits."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bourbon Biscuits\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I unload partially?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, partial unloads are supported.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What if unload qty is wrong?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"You can adjust quantities before finalizing.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Unload all damaged products."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove damaged stock from vehicle."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen with damaged stock.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add offroute customer Rohit Stores, sell Coke 500ml qty 4 and collect full cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing off-route sale and payment.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":4}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Neelam Mart, sell Sprite 500ml qty 7 and take payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 1 Fanta 500ml from Rohit Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Rohit Stores\",\"returnItems\":[{\"product\":\"Fanta 500ml\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 2 Limca 1L to Rohit Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 500 cash from Rohit Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rohit Stores\",\"amount\":500}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Rohit Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Rohit Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can composite skip screens?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, it pre-fills and skips intermediate steps.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is composite optional?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, individual actions can be used instead.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Sunrise Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Sunrise Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sunrise Stores\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Moonlight Mart\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 6 bottles of Pepsi Black to Sunrise Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sunrise Stores\",\"saleItems\":[{\"product\":\"Pepsi Black\",\"qty\":6}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 4 Sprite Zero for Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Moonlight Mart\",\"saleItems\":[{\"product\":\"Sprite Zero\",\"qty\":4}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Return 2 damaged Thums Up 500ml from Sunrise Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sunrise Stores\",\"returnItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":2}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Take back 1 expired Pepsi 500ml from Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full cash from Sunrise Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting full outstanding balance.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Sunrise Stores\",\"amount\":\"FULL\"}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 950 cash from Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I finish route without cash?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, pending payments can be settled later if allowed.\"}"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is delivery confirmation final?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
+      }
+    ]
   }
 ]

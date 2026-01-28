@@ -12,7 +12,7 @@ A comprehensive end-to-end fine-tuning framework using Unsloth with Flash Attent
 - **Configurable Export**: LoRA adapter, merged 16-bit, and GGUF formats
 - **Automatic GGUF Conversion**: Uses llama.cpp directly (auto-builds on first run, Windows compatible)
 - **Windows Optimized**: Pre-built wheels, automated installation scripts
-- **Flexible Dataset Input**: Supports JSON with multiple schemas
+- **Single Dataset Format**: Messages format only (tokenizer handles model-specific formatting)
 
 ## Requirements
 
@@ -166,27 +166,18 @@ export:
     - "q8_0"            # 8-bit (high quality, ~1.5GB)
 ```
 
-## Dataset Format for LFM 2.5 Thinking
+## Dataset Format
 
-Place your initial dataset in `data/raw/initial_dataset.json`. LFM 2.5 Thinking is optimized for reasoning tasks, so include step-by-step thinking:
+All datasets must be in **messages format**. Place your dataset in `data/raw/initial_dataset.json`:
 
-**Instruction-Response Format (Recommended for Thinking Tasks):**
 ```json
 [
   {
-    "instruction": "Solve this step by step: What is 25 * 17?",
-    "response": "Let me think through this:\n1. 25 * 10 = 250\n2. 25 * 7 = 175\n3. 250 + 175 = 425\n\nAnswer: 425"
+    "messages": [
+      {"role": "user", "content": "Solve this step by step: What is 25 * 17?"},
+      {"role": "assistant", "content": "Let me think through this:\n1. 25 * 10 = 250\n2. 25 * 7 = 175\n3. 250 + 175 = 425\n\nAnswer: 425"}
+    ]
   },
-  {
-    "instruction": "Explain why we need sleep, using reasoning.",
-    "response": "Let me think through why sleep is important:\n1. During sleep, the brain consolidates memories\n2. The body repairs tissues\n3. The immune system strengthens\n4. Energy is restored\n\nTherefore, sleep is essential for health and well-being."
-  }
-]
-```
-
-**Chat Format:**
-```json
-[
   {
     "messages": [
       {"role": "user", "content": "Hello"},

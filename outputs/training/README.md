@@ -4,8 +4,8 @@ library_name: transformers
 model_name: training
 tags:
 - generated_from_trainer
-- sft
 - unsloth
+- sft
 - trl
 licence: license
 ---

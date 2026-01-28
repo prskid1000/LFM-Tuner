@@ -24,6 +24,46 @@ Dataset.map = _patched_map
 logger = logging.getLogger(__name__)
 
 
+def load_tokenizer_only(
+    model_name: str,
+    config: Dict[str, Any]
+):
+    """
+    Load only the tokenizer (lightweight, for dataset formatting)
+    
+    This is useful when you only need the tokenizer for formatting datasets
+    and don't need to load the full model yet.
+    
+    Args:
+        model_name: Model name or path
+        config: Configuration dictionary
+    
+    Returns:
+        tokenizer
+    """
+    from transformers import AutoTokenizer
+    
+    logger.info(f"Loading tokenizer from: {model_name}")
+    
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_name,
+            trust_remote_code=config.get('trust_remote_code', False),
+            token=config.get('hf_token', None),
+        )
+        
+        # Ensure pad token is set
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        
+        logger.info("Tokenizer loaded successfully")
+        return tokenizer
+    
+    except Exception as e:
+        logger.error(f"Failed to load tokenizer: {e}")
+        raise
+
+
 def load_model(
     model_name: str,
     config: Dict[str, Any],

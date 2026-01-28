@@ -1,6 +1,9 @@
 """
 Dataset Creation Module
 Handles loading initial datasets and generating synthetic data using LM Studio
+
+All input/output data must be in messages format:
+[{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
 """
 
 import json
@@ -17,18 +20,33 @@ logger = logging.getLogger(__name__)
 
 
 def load_initial_dataset(
-    dataset_path: Path,
-    schema: Optional[str] = None
+    dataset_path: Path
 ) -> List[Dict[str, Any]]:
     """
-    Load initial JSON dataset with flexible schema detection
+    Load initial JSON dataset in messages format
+    
+    Expected format: Each example must have a 'messages' key containing a list of
+    message dictionaries with 'role' and 'content' keys.
+    
+    Example:
+    [
+        {
+            "messages": [
+                {"role": "user", "content": "What is Python?"},
+                {"role": "assistant", "content": "Python is a programming language..."}
+            ]
+        }
+    ]
     
     Args:
-        dataset_path: Path to JSON file
-        schema: Optional schema type ('instruction', 'chat', 'completion', 'auto')
+        dataset_path: Path to JSON or JSONL file
     
     Returns:
-        List of data examples
+        List of data examples in messages format
+    
+    Raises:
+        FileNotFoundError: If dataset file doesn't exist
+        ValueError: If data format is invalid
     """
     dataset_path = Path(dataset_path)
     
@@ -51,35 +69,25 @@ def load_initial_dataset(
                 else:
                     raise ValueError("Could not find data array in JSON file")
     
-    logger.info(f"Loaded {len(data)} examples")
+    # Validate format
+    if not isinstance(data, list):
+        raise ValueError("Dataset must be a list of examples")
+    
+    if len(data) == 0:
+        raise ValueError("Dataset is empty")
+    
+    # Check that all examples have messages
+    for i, example in enumerate(data):
+        if not isinstance(example, dict):
+            raise ValueError(f"Example {i} must be a dictionary")
+        if 'messages' not in example and 'conversations' not in example:
+            raise ValueError(
+                f"Example {i} must have 'messages' key. "
+                "Expected format: {{'messages': [{{'role': 'user', 'content': '...'}}, ...]}}"
+            )
+    
+    logger.info(f"Loaded {len(data)} examples in messages format")
     return data
-
-
-def detect_schema(data: List[Dict[str, Any]]) -> str:
-    """Auto-detect dataset schema"""
-    if not data:
-        return "unknown"
-    
-    sample = data[0]
-    keys = set(sample.keys())
-    
-    # Instruction-response format
-    if 'instruction' in keys and 'response' in keys:
-        return 'instruction'
-    
-    # Chat format
-    if 'messages' in keys or 'conversations' in keys:
-        return 'chat'
-    
-    # Completion format
-    if 'prompt' in keys and 'completion' in keys:
-        return 'completion'
-    
-    # Text format
-    if 'text' in keys:
-        return 'text'
-    
-    return 'unknown'
 
 
 def generate_with_lm_studio(
@@ -151,137 +159,102 @@ def generate_with_lm_studio(
 
 def create_augmentation_prompts(
     example: Dict[str, Any], 
-    schema: str, 
     strategy: str
 ) -> tuple[str, str]:
     """
     Create system and user prompts for augmentation
     
     Augmentation Strategies:
-    - 'paraphrase': Rewrites instructions/prompts with different wording while keeping the same meaning
-                   Works with: instruction, completion schemas
-    
-    - 'expand': Generates new detailed responses/completions for existing instructions/prompts
-               Works with: instruction, completion schemas
-    
-    - 'variation': Creates new instructions that ask for similar information in different ways
-                  Works with: instruction schema only
-    
-    - 'response_variation': Generates alternative responses using different approaches or styles
-                           Works with: instruction schema only
+    - 'paraphrase': Rewrites user messages with different wording while keeping the same meaning
+    - 'expand': Generates new detailed assistant responses for existing user messages
+    - 'variation': Creates new user messages that ask for similar information in different ways
+    - 'response_variation': Generates alternative assistant responses with different approaches/styles
     
     Args:
-        example: Dataset example to augment
-        schema: Detected schema ('instruction', 'chat', 'completion', 'text')
+        example: Dataset example in messages format (must have 'messages' key)
         strategy: Augmentation strategy to apply
     
     Returns:
         Tuple of (system_prompt, user_prompt)
     """
+    # Extract messages from example
+    messages = example.get('messages', example.get('conversations', []))
+    
+    if not messages or not isinstance(messages, list):
+        raise ValueError("Example must have 'messages' key with a list of messages")
+    
+    # Extract user and assistant content from messages
+    user_messages = [msg['content'] for msg in messages if msg.get('role') == 'user']
+    assistant_messages = [msg['content'] for msg in messages if msg.get('role') == 'assistant']
+    
+    user_content = user_messages[-1] if user_messages else ""
+    assistant_content = assistant_messages[-1] if assistant_messages else ""
     
     if strategy == "paraphrase":
-        if schema == 'instruction':
-            system_prompt = """You are a dataset augmentation assistant. Your task is to paraphrase instructions while preserving their meaning and intent. 
+        system_prompt = """You are a dataset augmentation assistant. Your task is to paraphrase user messages while preserving their meaning and intent. 
 Rules:
 - Maintain the same semantic meaning
 - Use different wording and sentence structure
 - Keep the same level of detail
-- Output ONLY the paraphrased instruction, nothing else
+- Output ONLY the paraphrased message, nothing else
 - Do not add explanations or extra text"""
-            
-            user_prompt = f"""Paraphrase this instruction:
-
-{example.get('instruction', '')}
-
-Paraphrased instruction:"""
-            
-        elif schema == 'completion':
-            system_prompt = """You are a dataset augmentation assistant. Paraphrase the given prompt while maintaining its core meaning and purpose.
-Output ONLY the paraphrased prompt without any additional text."""
-            
-            user_prompt = f"""Paraphrase this prompt:
-
-{example.get('prompt', '')}
-
-Paraphrased prompt:"""
         
-        else:
-            # Fallback for unsupported schemas
-            system_prompt = "You are a helpful dataset augmentation assistant."
-            user_prompt = f"Paraphrase this text: {str(example)}"
+        user_prompt = f"""Paraphrase this user message:
+
+{user_content}
+
+Paraphrased message:"""
     
     elif strategy == "expand":
-        if schema == 'instruction':
-            system_prompt = """You are a dataset augmentation assistant. Your task is to generate detailed, high-quality responses to instructions.
+        system_prompt = """You are a dataset augmentation assistant. Your task is to generate detailed, high-quality assistant responses.
 Rules:
 - Provide comprehensive and accurate responses
 - Maintain professional tone
 - Be specific and actionable
 - Output ONLY the response, no preamble or explanations
-- Do not restate the instruction"""
-            
-            user_prompt = f"""Instruction: {example.get('instruction', '')}
-
-Generate a detailed response:"""
-            
-        elif schema == 'completion':
-            system_prompt = """You are a dataset augmentation assistant. Generate expanded, detailed completions for the given prompt.
-Output ONLY the completion text."""
-            
-            user_prompt = f"""Prompt: {example.get('prompt', '')}
-
-Completion:"""
+- Do not restate the user message"""
         
-        else:
-            system_prompt = "You are a helpful dataset augmentation assistant."
-            user_prompt = f"Generate a detailed completion for: {str(example)}"
+        user_prompt = f"""User message: {user_content}
+
+Generate a detailed assistant response:"""
     
     elif strategy == "variation":
-        if schema == 'instruction':
-            system_prompt = """You are a dataset augmentation assistant. Create variations of instructions that ask for similar information in different ways.
+        system_prompt = """You are a dataset augmentation assistant. Create variations of user messages that ask for similar information in different ways.
 Rules:
 - Change the phrasing and approach
 - Maintain the core intent
 - Add or modify context slightly
-- Output ONLY the varied instruction
+- Output ONLY the varied message
 - Keep it natural and realistic"""
-            
-            user_prompt = f"""Create a variation of this instruction:
-
-{example.get('instruction', '')}
-
-Varied instruction:"""
         
-        else:
-            # 'variation' strategy only works well with instruction schema
-            logger.warning(f"'variation' strategy works best with 'instruction' schema, current schema is '{schema}'")
-            system_prompt = "You are a helpful dataset augmentation assistant."
-            user_prompt = f"Create a variation of: {str(example)}"
+        user_prompt = f"""Create a variation of this user message:
+
+{user_content}
+
+Varied message:"""
     
     elif strategy == "response_variation":
-        if schema == 'instruction':
-            system_prompt = """You are a dataset augmentation assistant. Generate alternative responses to the given instruction that are correct but approach the answer differently.
+        if not assistant_content:
+            logger.warning(f"'response_variation' strategy requires an assistant response, but none found")
+            system_prompt = "You are a helpful dataset augmentation assistant."
+            user_prompt = f"Generate an alternative response for: {user_content}"
+        else:
+            system_prompt = """You are a dataset augmentation assistant. Generate alternative assistant responses that are correct but approach the answer differently.
 Rules:
 - Provide accurate information
 - Use a different structure or emphasis
 - Maintain quality and completeness
 - Output ONLY the response"""
             
-            user_prompt = f"""Instruction: {example.get('instruction', '')}
+            user_prompt = f"""User message: {user_content}
 
-Original response: {example.get('response', '')}
+Original assistant response: {assistant_content}
 
-Generate an alternative response:"""
-        
-        else:
-            # 'response_variation' strategy only works with instruction schema
-            logger.warning(f"'response_variation' strategy requires 'instruction' schema, current schema is '{schema}'")
-            system_prompt = "You are a helpful dataset augmentation assistant."
-            user_prompt = f"Generate an alternative response for: {str(example)}"
+Generate an alternative assistant response:"""
     
     else:
         system_prompt = "You are a helpful dataset augmentation assistant."
-        user_prompt = str(example)
+        user_prompt = f"Augment this conversation: {str(messages)}"
     
     return system_prompt, user_prompt
 
@@ -299,14 +272,16 @@ def augment_dataset(
     """
     Augment dataset using LM Studio
     
+    Input and output data must be in messages format.
+    
     Args:
-        initial_data: Initial dataset examples
+        initial_data: Initial dataset examples in messages format (each must have 'messages' key)
         api_url: LM Studio API URL
         augmentation_strategy: Strategy to use:
-            - 'paraphrase': Rewrite the instruction/prompt with different wording (keeps same meaning)
-            - 'expand': Generate new detailed responses for existing instructions
-            - 'variation': Create new instructions that ask similar things in different ways
-            - 'response_variation': Generate alternative responses with different approaches/styles
+            - 'paraphrase': Rewrite user messages with different wording (keeps same meaning)
+            - 'expand': Generate new detailed assistant responses
+            - 'variation': Create new user messages that ask similar things in different ways
+            - 'response_variation': Generate alternative assistant responses with different approaches/styles
         num_augmentations_per_example: Number of augmentations per example
         delay: Delay between API calls (seconds)
         use_structured_output: Use JSON structured output format
@@ -314,19 +289,11 @@ def augment_dataset(
         save_format: Format to save ('json' or 'jsonl')
     
     Returns:
-        Augmented dataset
-        
-    Note:
-        Strategy compatibility by schema:
-        - instruction schema: All strategies work
-        - completion schema: 'paraphrase' (prompts) and 'expand' (completions) work
-        - chat schema: Limited support (appends new assistant messages)
+        Augmented dataset in messages format
     """
     augmented_data = []
-    schema = detect_schema(initial_data)
     
     logger.info(f"Augmenting dataset with '{augmentation_strategy}' strategy")
-    logger.info(f"Detected schema: {schema}")
     logger.info(f"Generating {num_augmentations_per_example} augmentations per example")
     
     response_format = {"type": "json_object"} if use_structured_output else None
@@ -337,13 +304,13 @@ def augment_dataset(
         for aug_idx in range(num_augmentations_per_example):
             try:
                 system_prompt, user_prompt = create_augmentation_prompts(
-                    example, schema, augmentation_strategy
+                    example, augmentation_strategy
                 )
                 
                 # Modify prompts for structured output
-                if use_structured_output and schema == 'instruction':
+                if use_structured_output:
                     if augmentation_strategy == "paraphrase":
-                        user_prompt += '\n\nRespond in JSON format: {"instruction": "your paraphrased instruction here"}'
+                        user_prompt += '\n\nRespond in JSON format: {"message": "your paraphrased message here"}'
                     elif augmentation_strategy == "expand":
                         user_prompt += '\n\nRespond in JSON format: {"response": "your response here"}'
                 
@@ -359,42 +326,41 @@ def augment_dataset(
                     try:
                         generated_json = json.loads(generated)
                         if augmentation_strategy == "paraphrase":
-                            generated = generated_json.get("instruction", generated)
+                            generated = generated_json.get("message", generated)
                         elif augmentation_strategy == "expand":
                             generated = generated_json.get("response", generated)
                     except json.JSONDecodeError:
                         logger.warning(f"Failed to parse JSON output, using raw text")
                 
-                # Create augmented example based on schema and strategy
+                # Create augmented example by modifying messages
+                messages = example.get('messages', example.get('conversations', [])).copy()
                 aug_example = example.copy()
                 
-                if schema == 'instruction':
-                    if augmentation_strategy == "paraphrase":
-                        aug_example['instruction'] = generated
-                    elif augmentation_strategy == "expand":
-                        aug_example['response'] = generated
-                    elif augmentation_strategy == "variation":
-                        aug_example['instruction'] = generated
-                    elif augmentation_strategy == "response_variation":
-                        aug_example['response'] = generated
+                # Modify messages based on strategy
+                if augmentation_strategy == "paraphrase":
+                    # Replace the last user message with paraphrased version
+                    for i in range(len(messages) - 1, -1, -1):
+                        if messages[i].get('role') == 'user':
+                            messages[i] = {"role": "user", "content": generated}
+                            break
+                elif augmentation_strategy == "expand":
+                    # Add new assistant response
+                    messages.append({"role": "assistant", "content": generated})
+                elif augmentation_strategy == "variation":
+                    # Replace the last user message with variation
+                    for i in range(len(messages) - 1, -1, -1):
+                        if messages[i].get('role') == 'user':
+                            messages[i] = {"role": "user", "content": generated}
+                            break
+                elif augmentation_strategy == "response_variation":
+                    # Replace the last assistant message with variation
+                    for i in range(len(messages) - 1, -1, -1):
+                        if messages[i].get('role') == 'assistant':
+                            messages[i] = {"role": "assistant", "content": generated}
+                            break
                 
-                elif schema == 'chat':
-                    messages = example.get('messages', example.get('conversations', []))
-                    if messages:
-                        aug_example = example.copy()
-                        if 'messages' in aug_example:
-                            aug_example['messages'] = messages.copy()
-                            aug_example['messages'].append({
-                                "role": "assistant",
-                                "content": generated
-                            })
-                
-                elif schema == 'completion':
-                    if augmentation_strategy == "paraphrase":
-                        aug_example['prompt'] = generated
-                    else:
-                        aug_example['completion'] = generated
-                
+                # Store augmented messages
+                aug_example['messages'] = messages
                 augmented_data.append(aug_example)
                 time.sleep(delay)
                 
@@ -444,13 +410,12 @@ def filter_quality(
     seen = set()
     
     for example in data:
-        # Extract text for length check
+        # Extract text from messages for length check
         text = ""
-        if 'instruction' in example:
-            text += str(example.get('instruction', ''))
-        if 'response' in example:
-            text += str(example.get('response', ''))
-        if 'text' in example:
+        messages = example.get('messages', example.get('conversations', []))
+        if messages and isinstance(messages, list):
+            text = " ".join([msg.get('content', '') for msg in messages if isinstance(msg, dict)])
+        elif 'text' in example:
             text = str(example.get('text', ''))
         
         # Length filter

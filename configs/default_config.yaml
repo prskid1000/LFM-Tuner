@@ -69,8 +69,6 @@ dataset:
   generated_path: "data/generated"
   train_ratio: 0.9
   val_ratio: 0.1
-  format_type: "chat"     # "chat" or "instruction"
-  model_type: "lfm"       # "llama", "qwen", "gemma", "lfm" - Set to "lfm" for LFM models
 
 # LM Studio Configuration (for dataset generation)
 lm_studio:
@@ -94,13 +92,13 @@ evaluation:
 # Export Configuration
 # Enable/disable each format as needed
 export:
-  export_lora: true       # Save LoRA adapter
+  export_lora: false       # Save LoRA adapter
   export_merged: true     # Merge and save 16-bit model
   export_gguf: true       # Export to GGUF format (uses llama.cpp directly)
   gguf_quantization_methods:  # GGUF quantization formats to generate
     - "q4_k_m"            # 4-bit (recommended, good balance)
-    - "q5_k_m"            # 5-bit (better quality)
-    - "q8_0"              # 8-bit (high quality)
+    # - "q5_k_m"            # 5-bit (better quality)
+    # - "q8_0"              # 8-bit (high quality)
 
 # Output Configuration
 output:
