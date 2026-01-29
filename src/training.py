@@ -23,6 +23,118 @@ Dataset.map = _patched_map
 
 logger = logging.getLogger(__name__)
 
+def _infer_chat_markers_from_tokenizer(tokenizer) -> Optional[Tuple[str, str]]:
+    """
+    Infer the raw string markers for the user/instruction and assistant/response
+    parts by rendering a minimal chat with tokenizer.apply_chat_template.
+
+    Returns:
+        (instruction_part, response_part) or None if unavailable.
+    """
+    if tokenizer is None or not hasattr(tokenizer, "apply_chat_template"):
+        return None
+
+    user_sentinel = "__UNSLOTH_USER_SENTINEL__"
+    assistant_sentinel = "__UNSLOTH_ASSISTANT_SENTINEL__"
+    try:
+        rendered = tokenizer.apply_chat_template(
+            [
+                {"role": "user", "content": user_sentinel},
+                {"role": "assistant", "content": assistant_sentinel},
+            ],
+            tokenize=False,
+            add_generation_prompt=False,
+        )
+    except Exception:
+        return None
+
+    if not isinstance(rendered, str):
+        return None
+
+    user_idx = rendered.find(user_sentinel)
+    asst_idx = rendered.find(assistant_sentinel)
+    if user_idx == -1 or asst_idx == -1 or asst_idx <= user_idx:
+        return None
+
+    instruction_part = rendered[:user_idx]
+
+    # Find the start of the assistant turn marker by looking for the boundary
+    # between user content end and assistant content start.
+    between = rendered[user_idx + len(user_sentinel) : asst_idx]
+    if not between:
+        return None
+
+    response_part = between
+
+    # Some templates include the user's end-of-turn + assistant start-of-turn.
+    # train_on_responses_only expects response_part to be the assistant marker
+    # substring that appears right before assistant content.
+    #
+    # Heuristic: take the last "turn header" looking segment in `between`.
+    # If we can't, keep full `between` (better than guessing wrong).
+    for candidate in (
+        "<|im_start|>assistant\n",
+        "<|assistant|>\n",
+        "assistant\n",
+    ):
+        if candidate in between:
+            response_part = candidate
+            break
+
+    return instruction_part, response_part
+
+
+def _token_ids_contain_subsequence(haystack, needle) -> bool:
+    """Return True if `needle` appears as a contiguous subsequence in `haystack`."""
+    if not needle or len(needle) > len(haystack):
+        return False
+    # Simple sliding window; sequences are small (markers).
+    n = len(needle)
+    for i in range(0, len(haystack) - n + 1):
+        if haystack[i : i + n] == needle:
+            return True
+    return False
+
+
+def _require_response_marker_present_in_sample(
+    tokenizer,
+    train_dataset: Dataset,
+    response_part: str,
+) -> None:
+    """
+    Fail fast if response marker cannot be found in a tokenized sample.
+    This prevents "all labels are -100" issues when doing response-only masking.
+    """
+    if tokenizer is None:
+        raise ValueError("Tokenizer is required for response-only/completions-only optimization.")
+
+    try:
+        sample = train_dataset[0]
+        sample_text = sample.get("text", "") if isinstance(sample, dict) else ""
+    except Exception as e:
+        raise ValueError(f"Could not read sample from train_dataset for marker validation: {e}") from e
+
+    if not isinstance(sample_text, str) or not sample_text:
+        raise ValueError(
+            "Train dataset sample does not contain a non-empty 'text' field. "
+            "response-only/completions-only optimization requires a 'text' column."
+        )
+
+    try:
+        marker_ids = tokenizer(response_part, add_special_tokens=False)["input_ids"]
+        text_ids = tokenizer(sample_text, add_special_tokens=False)["input_ids"]
+    except Exception as e:
+        raise ValueError(f"Failed to tokenize sample text / response marker for validation: {e}") from e
+
+    if not _token_ids_contain_subsequence(text_ids, marker_ids):
+        raise ValueError(
+            "Response marker inferred from tokenizer chat template was not found in tokenized dataset text. "
+            "This usually means your dataset was formatted with a different tokenizer/chat_template than the "
+            "one you're training with. Rebuild the dataset using the SAME tokenizer, or switch "
+            "`training.optimization_mode` to 'standard'. "
+            f"(response_part={repr(response_part)})"
+        )
+
 
 def load_tokenizer_only(
     model_name: str,
@@ -271,7 +383,7 @@ def train_model(
     resume_from_checkpoint: Optional[str] = None
 ) -> SFTTrainer:
     """
-    Train model using SFTTrainer
+    Train model using SFTTrainer with optional response-only training
     
     Args:
         model: Unsloth model with LoRA
@@ -324,6 +436,7 @@ def train_model(
     if resume_from_checkpoint:
         logger.info(f"Resuming from checkpoint: {resume_from_checkpoint}")
     
+    # Create trainer
     trainer = SFTTrainer(
         model=model,
         train_dataset=train_dataset,
@@ -331,6 +444,71 @@ def train_model(
         tokenizer=tokenizer,
         args=training_args,
     )
+    
+    # Apply training optimization based on config
+    optimization_mode = training_config.get('optimization_mode', 'standard')
+    
+    if optimization_mode == 'responses_only':
+        logger.info("Applying response-only training optimization")
+        from unsloth.chat_templates import train_on_responses_only
+        
+        # Strict: infer markers from tokenizer chat template only (no config / no fallback).
+        inferred = _infer_chat_markers_from_tokenizer(tokenizer)
+        if inferred is None:
+            raise ValueError(
+                "Could not infer chat markers from tokenizer.apply_chat_template. "
+                "response-only optimization requires a tokenizer with a valid chat template. "
+                "Either use a chat/instruct model with a defined chat template, or set "
+                "`training.optimization_mode` to 'standard'."
+            )
+        instruction_part, response_part = inferred
+        logger.info("Inferred chat markers from tokenizer chat template.")
+        
+        logger.info(f"Instruction marker: {repr(instruction_part)}")
+        logger.info(f"Response marker: {repr(response_part)}")
+        _require_response_marker_present_in_sample(tokenizer, train_dataset, response_part)
+
+        trainer = train_on_responses_only(
+            trainer,
+            instruction_part=instruction_part,
+            response_part=response_part,
+        )
+    
+    elif optimization_mode == 'completions_only':
+        logger.info("Applying completion-only training optimization")
+        from unsloth.chat_templates import train_on_completions
+        
+        # Strict: infer markers from tokenizer chat template only (no config / no fallback).
+        inferred = _infer_chat_markers_from_tokenizer(tokenizer)
+        if inferred is None:
+            raise ValueError(
+                "Could not infer chat markers from tokenizer.apply_chat_template. "
+                "completions-only optimization requires a tokenizer with a valid chat template. "
+                "Either use a chat/instruct model with a defined chat template, or set "
+                "`training.optimization_mode` to 'standard'."
+            )
+        instruction_part, response_part = inferred
+        logger.info("Inferred chat markers from tokenizer chat template.")
+
+        logger.info(f"Instruction marker: {repr(instruction_part)}")
+        logger.info(f"Response marker: {repr(response_part)}")
+        _require_response_marker_present_in_sample(tokenizer, train_dataset, response_part)
+        
+        trainer = train_on_completions(
+            trainer,
+            instruction_part=instruction_part,
+            response_part=response_part,
+        )
+    
+    elif optimization_mode == 'standard':
+        logger.info("Using standard training (loss on full sequence)")
+        # Trainer already created above, no modification needed
+    
+    else:
+        raise ValueError(
+            f"Unknown optimization_mode: {optimization_mode}. "
+            "Must be one of: 'standard', 'responses_only', 'completions_only'"
+        )
     
     # Train (with optional checkpoint resume)
     trainer.train(resume_from_checkpoint=resume_from_checkpoint)

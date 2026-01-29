@@ -15,6 +15,64 @@ import json
 
 logger = logging.getLogger(__name__)
 
+def _infer_chat_markers_from_tokenizer(tokenizer) -> Optional[Tuple[str, str]]:
+    """
+    Infer raw string markers for user/instruction and assistant/response
+    by rendering a minimal conversation with tokenizer.apply_chat_template.
+
+    Returns:
+        (instruction_part, response_part) or None if unavailable.
+    """
+    if tokenizer is None or not hasattr(tokenizer, "apply_chat_template"):
+        return None
+
+    user_sentinel = "__USER_SENTINEL__"
+    assistant_sentinel = "__ASSISTANT_SENTINEL__"
+    try:
+        rendered = tokenizer.apply_chat_template(
+            [
+                {"role": "user", "content": user_sentinel},
+                {"role": "assistant", "content": assistant_sentinel},
+            ],
+            tokenize=False,
+            add_generation_prompt=False,
+        )
+    except Exception:
+        return None
+
+    if not isinstance(rendered, str):
+        return None
+
+    user_idx = rendered.find(user_sentinel)
+    asst_idx = rendered.find(assistant_sentinel)
+    if user_idx == -1 or asst_idx == -1 or asst_idx <= user_idx:
+        return None
+
+    instruction_part = rendered[:user_idx]
+    between = rendered[user_idx + len(user_sentinel) : asst_idx]
+    if not between:
+        return None
+
+    # Prefer the exact assistant turn header if it exists inside the boundary.
+    response_part = between
+    for candidate in ("<|im_start|>assistant\n", "<|assistant|>\n", "assistant\n"):
+        if candidate in between:
+            response_part = candidate
+            break
+
+    return instruction_part, response_part
+
+
+def _token_ids_contain_subsequence(haystack, needle) -> bool:
+    """Return True if `needle` appears as a contiguous subsequence in `haystack`."""
+    if not needle or len(needle) > len(haystack):
+        return False
+    n = len(needle)
+    for i in range(0, len(haystack) - n + 1):
+        if haystack[i : i + n] == needle:
+            return True
+    return False
+
 
 def convert_to_unsloth_format(
     data: List[Dict[str, Any]],
@@ -50,6 +108,15 @@ def convert_to_unsloth_format(
     
     if not hasattr(tokenizer, 'apply_chat_template'):
         raise ValueError("tokenizer must have apply_chat_template method. Use a proper model tokenizer.")
+
+    inferred = _infer_chat_markers_from_tokenizer(tokenizer)
+    if inferred is None:
+        raise ValueError(
+            "Could not infer chat markers from tokenizer.apply_chat_template. "
+            "This pipeline requires a tokenizer with a valid chat template so the dataset text "
+            "and training masking logic stay aligned."
+        )
+    _, response_part = inferred
     
     converted = []
     
@@ -78,14 +145,25 @@ def convert_to_unsloth_format(
                 break
             if not msg.get('content', '').strip():
                 continue  # Skip empty messages
-            normalized_messages.append({
-                "role": msg['role'],
-                "content": msg['content'].strip()
-            })
+            role = str(msg["role"]).strip()
+            content = str(msg["content"]).strip()
+            if role not in {"system", "user", "assistant"}:
+                logger.warning(f"Example {i} has unsupported role={role!r}, skipping")
+                break
+            normalized_messages.append({"role": role, "content": content})
         else:
             # Only process if we didn't break (all messages valid)
             if not normalized_messages:
                 logger.warning(f"Example {i} has no valid messages after normalization, skipping")
+                continue
+
+            # Strict: require at least 1 user turn and an assistant answer.
+            roles = [m["role"] for m in normalized_messages]
+            if "user" not in roles or "assistant" not in roles:
+                logger.warning(f"Example {i} missing required user/assistant turns, skipping")
+                continue
+            if normalized_messages[-1]["role"] != "assistant":
+                logger.warning(f"Example {i} does not end with assistant message, skipping")
                 continue
             
             # Use tokenizer's apply_chat_template to format according to model's native format
@@ -95,7 +173,17 @@ def convert_to_unsloth_format(
                     tokenize=False,
                     add_generation_prompt=False
                 )
-                converted.append({"text": text})
+                # Token-level sanity check: response marker must appear in tokenized text.
+                marker_ids = tokenizer(response_part, add_special_tokens=False)["input_ids"]
+                text_ids = tokenizer(text, add_special_tokens=False)["input_ids"]
+                if not _token_ids_contain_subsequence(text_ids, marker_ids):
+                    raise ValueError(
+                        "Assistant response marker not found in tokenized rendered text. "
+                        "This indicates a tokenizer/template mismatch."
+                    )
+
+                # Store both for traceability/debugging.
+                converted.append({"messages": normalized_messages, "text": text})
             except Exception as e:
                 logger.warning(f"Failed to apply chat template to example {i}: {e}")
                 continue

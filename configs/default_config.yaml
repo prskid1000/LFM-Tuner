@@ -61,6 +61,9 @@ training:
   fp16: false             # Use bf16 if supported
   bf16: false             # Better than fp16 if GPU supports
   report_to: null         # Set to "wandb" or "tensorboard" if desired
+  # Training optimization mode
+  # Options: 'standard', 'responses_only', 'completions_only'
+  optimization_mode: 'responses_only'
 
 # Dataset Configuration
 dataset:
@@ -90,15 +93,23 @@ evaluation:
   max_new_tokens: 200       # Max tokens to generate per sample
 
 # Export Configuration
-# Enable/disable each format as needed
+# LoRA / merged use Unsloth when available. GGUF uses llama.cpp directly
+# (not Unsloth) for Windows compatibility — Unsloth GGUF often fails on Windows.
 export:
-  export_lora: false       # Save LoRA adapter
-  export_merged: true     # Merge and save 16-bit model
-  export_gguf: true       # Export to GGUF format (uses llama.cpp directly)
-  gguf_quantization_methods:  # GGUF quantization formats to generate
-    - "q4_k_m"            # 4-bit (recommended, good balance)
+  export_lora: true        # Save LoRA adapter (recommended)
+  export_merged: true      # Merge and save 16-bit model
+  export_gguf: true        # GGUF via llama.cpp (Windows-friendly)
+  gguf_quantization_methods:
+    - "q4_k_m"             # 4-bit (recommended)
     # - "q5_k_m"            # 5-bit (better quality)
     # - "q8_0"              # 8-bit (high quality)
+
+  # Push to Hugging Face Hub (optional)
+  push_to_hub: false
+  hub_repo_id: "your-username/your-model-name"
+  push_lora: true
+  push_merged: true
+  push_gguf: true
 
 # Output Configuration
 output:

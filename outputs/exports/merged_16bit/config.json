@@ -17,7 +17,7 @@
   "conv_bias": false,
   "conv_dim": 2048,
   "conv_use_xavier_init": true,
-  "dtype": "bfloat16",
+  "torch_dtype": "bfloat16",
   "eos_token_id": 7,
   "hidden_size": 2048,
   "initializer_range": 0.02,

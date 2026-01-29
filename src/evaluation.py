@@ -52,8 +52,7 @@ def load_saved_model(
         config: Configuration dictionary
     
     Returns:
-        Tuple of (model, tokenizer)
-        Note: For GGUF models, tokenizer will be None
+        Tuple of (model, tokenizer). For GGUF, tokenizer is loaded from merged_16bit for chat template.
     """
     logger.info(f"Loading model from: {model_path}")
     logger.info(f"Format: {model_format}")
@@ -72,12 +71,15 @@ def load_saved_model(
         )
         
         logger.info(f"Loading LoRA adapter from: {model_path}")
-        model = FastLanguageModel.from_pretrained(
-            model_name=str(model_path),
-            max_seq_length=config.get('training', {}).get('max_seq_length', 2048) if config else 2048,
-            dtype=None,
-            load_in_4bit=False,
-        )[0]
+        try:
+            from peft import PeftModel
+        except ImportError as e:
+            raise ImportError(
+                "LoRA evaluation requires `peft`. Install with: pip install peft"
+            ) from e
+
+        # Attach adapter weights to the base model
+        model = PeftModel.from_pretrained(model, str(model_path))
         
         # Enable inference mode
         FastLanguageModel.for_inference(model)
@@ -141,8 +143,22 @@ def load_saved_model(
             n_batch=n_batch,
         )
         
-        # GGUF models don't have a separate tokenizer
-        tokenizer = None
+        # Load tokenizer from merged_16bit so we use the SAME chat template as training.
+        merged_dir = (gguf_path.parent if gguf_path.is_file() else gguf_path).parent / "merged_16bit"
+        if not merged_dir.exists():
+            raise FileNotFoundError(
+                "GGUF evaluation requires tokenizer from merged_16bit. "
+                f"Directory not found: {merged_dir}. Load GGUF from the exports directory (e.g. outputs/exports/gguf) so merged_16bit sits next to it."
+            )
+        try:
+            from transformers import AutoTokenizer
+            tokenizer = AutoTokenizer.from_pretrained(str(merged_dir))
+            logger.info(f"Loaded tokenizer from {merged_dir} for GGUF chat template")
+        except Exception as e:
+            raise RuntimeError(
+                "GGUF evaluation requires tokenizer from merged_16bit for correct chat template. "
+                f"Failed to load tokenizer: {e}"
+            ) from e
         
         logger.info("✓ GGUF model loaded successfully")
         return model, tokenizer
@@ -171,7 +187,7 @@ def generate_text(
     
     Args:
         model: Loaded model (HuggingFace or Llama)
-        tokenizer: Tokenizer (None for GGUF models)
+        tokenizer: Tokenizer (for GGUF, loaded from merged_16bit)
         messages: Messages list [{"role": "user", "content": "..."}]
         max_new_tokens: Maximum tokens to generate
         temperature: Sampling temperature
@@ -182,7 +198,7 @@ def generate_text(
     Returns:
         Generated text
     """
-    # Format messages using tokenizer's chat template
+    # Format messages using tokenizer's chat template (required for correct prompt format)
     if tokenizer and hasattr(tokenizer, 'apply_chat_template'):
         prompt = tokenizer.apply_chat_template(
             messages,
@@ -190,14 +206,22 @@ def generate_text(
             add_generation_prompt=True  # Add generation prompt for inference
         )
     else:
-        # GGUF models - convert messages to simple string format
-        prompt = "\n".join([f"{m.get('role', 'user')}: {m.get('content', '')}" for m in messages])
+        if is_gguf_model(model):
+            raise ValueError(
+                "GGUF evaluation requires a tokenizer for the chat template. "
+                "Load the GGUF model from the exports directory so merged_16bit (with tokenizer) is available next to the gguf folder."
+            )
+        raise ValueError("Tokenizer required for prompt formatting.")
     # Check if it's a GGUF model (llama-cpp-python)
     if is_gguf_model(model):
+        # Avoid duplicate leading BOS: tokenizer may add <|startoftext|>, llama.cpp adds it too
+        if prompt.startswith("<|startoftext|>"):
+            prompt = prompt[len("<|startoftext|>"):].lstrip()
+
         # Get max prompt length from config
         eval_config = config.get('evaluation', {}) if config else {}
         max_prompt_length = eval_config.get('gguf_max_prompt_length', 1000)
-        
+
         # Truncate prompt if too long for GGUF
         if len(prompt) > max_prompt_length:
             logger.debug(f"Truncating prompt from {len(prompt)} to {max_prompt_length} chars")
@@ -278,7 +302,7 @@ def evaluate_on_dataset(
     
     Args:
         model: Loaded model (HuggingFace or Llama)
-        tokenizer: Tokenizer (None for GGUF models)
+        tokenizer: Tokenizer (for GGUF, loaded from merged_16bit)
         dataset: Dataset to evaluate on (must have 'messages' key with messages format)
         num_samples: Number of samples to test
         max_new_tokens: Maximum tokens to generate
@@ -387,7 +411,7 @@ def interactive_test(model, tokenizer, config: Optional[Dict[str, Any]] = None):
     
     Args:
         model: Loaded model (HuggingFace or Llama)
-        tokenizer: Tokenizer (None for GGUF models)
+        tokenizer: Tokenizer (for GGUF, loaded from merged_16bit)
         config: Configuration dictionary (optional)
     """
     # Detect model type
