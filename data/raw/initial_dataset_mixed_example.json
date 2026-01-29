@@ -1,0 +1,17 @@
+[
+  {
+    "messages": [
+      { "role": "user", "content": "Say hello." },
+      { "role": "assistant", "content": "Hello!" }
+    ]
+  },
+  {
+    "messages": [
+      { "role": "user", "content": "What is 5 + 7?" },
+      {
+        "role": "assistant",
+        "content": "<reasoning>\n5 + 7 = 12.\n</reasoning>\n<final>\n12\n</final>"
+      }
+    ]
+  }
+]

@@ -37,14 +37,6 @@ env/
 *.swo
 *~
 
-# Data
-# data/raw/*
-# data/processed/*
-# data/generated/*
-# !data/raw/.gitkeep
-# !data/processed/.gitkeep
-# !data/generated/.gitkeep
-
 # Outputs
 outputs/*
 !outputs/.gitkeep

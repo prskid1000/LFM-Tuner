@@ -1,0 +1,29 @@
+[
+  {
+    "messages": [
+      { "role": "user", "content": "What is 2 + 2?" },
+      {
+        "role": "assistant",
+        "content": "<reasoning>\n2 + 2 equals 4.\n</reasoning>\n<final>\n4\n</final>"
+      }
+    ]
+  },
+  {
+    "messages": [
+      { "role": "user", "content": "If Alice has 3 apples and buys 2 more, how many apples does she have?" },
+      {
+        "role": "assistant",
+        "content": "<reasoning>\nAlice starts with 3 apples. She buys 2 more. 3 + 2 = 5.\n</reasoning>\n<final>\n5 apples\n</final>"
+      }
+    ]
+  },
+  {
+    "messages": [
+      { "role": "user", "content": "Solve: 10 minus 4." },
+      {
+        "role": "assistant",
+        "content": "<reasoning>\n10 - 4 = 6.\n</reasoning>\n<final>\n6\n</final>"
+      }
+    ]
+  }
+]

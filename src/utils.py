@@ -7,7 +7,7 @@ import os
 import yaml
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List, Union
 import sys
 
 
@@ -156,3 +156,71 @@ def check_cuda_available() -> bool:
         return torch.cuda.is_available()
     except ImportError:
         return False
+
+
+# ---------------------------------------------------------------------------
+# Chain-of-Thought / reasoning token masking
+# ---------------------------------------------------------------------------
+
+REASONING_START = "<reasoning>"
+REASONING_END = "</reasoning>"
+
+
+def mask_reasoning_labels_for_sequence(
+    input_ids: List[int],
+    labels: List[int],
+    tokenizer,
+) -> List[int]:
+    """
+    Set labels to -100 for all tokens between <reasoning> and </reasoning> (inclusive).
+    Keeps <final> and the rest trainable. Works on lists; use for single sequences or
+    inside a batch collator.
+
+    Assumes the same tokenizer was used to produce input_ids.
+    """
+    start_ids = tokenizer(REASONING_START, add_special_tokens=False)["input_ids"]
+    end_ids = tokenizer(REASONING_END, add_special_tokens=False)["input_ids"]
+    labels = list(labels)
+    i = 0
+    while i < len(input_ids):
+        if input_ids[i : i + len(start_ids)] == start_ids:
+            for j in range(i, i + len(start_ids)):
+                labels[j] = -100
+            i += len(start_ids)
+            while i < len(input_ids):
+                if input_ids[i : i + len(end_ids)] == end_ids:
+                    for j in range(i, i + len(end_ids)):
+                        labels[j] = -100
+                    i += len(end_ids)
+                    break
+                labels[i] = -100
+                i += 1
+        else:
+            i += 1
+    return labels
+
+
+def mask_reasoning_tokens(dataset, tokenizer):
+    """
+    Mask <reasoning>...</reasoning> spans by setting labels to -100.
+    Keeps <final> tokens trainable.
+
+    Use when the dataset already has 'input_ids' and 'labels' columns
+    (e.g. after pre-tokenization). Returns a new dataset with labels modified.
+
+    For SFTTrainer with 'text' column, reasoning masking is applied in the
+    data collator instead; this function is for pre-tokenized datasets.
+    """
+    from datasets import Dataset as HFDataset
+
+    def _mask(example):
+        input_ids = example["input_ids"]
+        labels = example["labels"]
+        if hasattr(labels, "tolist"):
+            labels = labels.tolist()
+        if hasattr(input_ids, "tolist"):
+            input_ids = input_ids.tolist()
+        example["labels"] = mask_reasoning_labels_for_sequence(input_ids, labels, tokenizer)
+        return example
+
+    return dataset.map(_mask, desc="Masking <reasoning> tokens")

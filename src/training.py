@@ -13,7 +13,12 @@ from typing import Dict, Any, Optional, Tuple
 from unsloth import FastLanguageModel, FastModel
 from trl import SFTTrainer, SFTConfig
 from datasets import Dataset
-from src.utils import validate_attention_backend, validate_bitsandbytes, get_gpu_memory_info
+from src.utils import (
+    validate_attention_backend,
+    validate_bitsandbytes,
+    get_gpu_memory_info,
+    mask_reasoning_labels_for_sequence,
+)
 
 _original_map = Dataset.map
 def _patched_map(self, *args, **kwargs):
@@ -503,13 +508,51 @@ def train_model(
     elif optimization_mode == 'standard':
         logger.info("Using standard training (loss on full sequence)")
         # Trainer already created above, no modification needed
-    
+
     else:
         raise ValueError(
             f"Unknown optimization_mode: {optimization_mode}. "
             "Must be one of: 'standard', 'responses_only', 'completions_only'"
         )
-    
+
+    # Chain-of-Thought: mask <reasoning> tokens when reasoning_mode is 'masked'
+    reasoning_mode = training_config.get("reasoning_mode", "none")
+    if reasoning_mode == "masked":
+        logger.info("Applying reasoning token masking (<reasoning>...</reasoning> excluded from loss)")
+        _collator = trainer.data_collator
+
+        def _collator_with_reasoning_mask(features):
+            batch = _collator(features)
+            if "labels" in batch and "input_ids" in batch:
+                labels = batch["labels"]
+                input_ids_batch = batch["input_ids"]
+                if hasattr(labels, "shape") and len(labels.shape) >= 2:
+                    new_labels = []
+                    for i in range(labels.shape[0]):
+                        ids = (
+                            input_ids_batch[i].tolist()
+                            if hasattr(input_ids_batch[i], "tolist")
+                            else list(input_ids_batch[i])
+                        )
+                        labs = (
+                            labels[i].tolist()
+                            if hasattr(labels[i], "tolist")
+                            else list(labels[i])
+                        )
+                        new_labs = mask_reasoning_labels_for_sequence(ids, labs, tokenizer)
+                        new_labels.append(new_labs)
+                    batch["labels"] = torch.tensor(
+                        new_labels, dtype=labels.dtype, device=labels.device
+                    )
+            return batch
+
+        trainer.data_collator = _collator_with_reasoning_mask
+    elif reasoning_mode not in ("none", "full"):
+        raise ValueError(
+            f"Unknown reasoning_mode: {reasoning_mode!r}. "
+            "Must be one of: 'none', 'full', 'masked'"
+        )
+
     # Train (with optional checkpoint resume)
     trainer.train(resume_from_checkpoint=resume_from_checkpoint)
     
