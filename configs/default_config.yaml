@@ -3,7 +3,7 @@
 
 # Model Configuration
 model:
-  name: "LiquidAI/LFM2.5-1.2B-Thinking"  # LFM 2.5 Thinking model
+  name: "LiquidAI/LFM2.5-1.2B-Instruct"  # LFM 2.5 Thinking model
   # Alternative LFM models:
   # - "LiquidAI/LFM2.5-1.2B-Base"
   # - "LiquidAI/LFM2.5-1.2B-Instruct"
@@ -54,7 +54,7 @@ training:
   per_device_train_batch_size: 2  # LFM 2.5 is small, can use batch size 2
   gradient_accumulation_steps: 4   # Effective batch size = 8
   warmup_steps: 10
-  max_steps: 10          # Adjust based on your needs
+  max_steps: 5000          # Adjust based on your needs
   logging_steps: 1
   optim: "adamw_8bit"     # Memory efficient optimizer
   seed: 3407

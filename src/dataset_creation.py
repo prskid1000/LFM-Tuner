@@ -6,6 +6,7 @@ All input/output data must be in messages format:
 [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
 """
 
+import hashlib
 import json
 import logging
 from random import random
@@ -17,6 +18,23 @@ import time
 
 
 logger = logging.getLogger(__name__)
+
+
+def _get_example_text(example: Dict[str, Any]) -> str:
+    """Extract concatenated text from an example for length/filter checks."""
+    messages = example.get("messages", example.get("conversations", []))
+    if messages and isinstance(messages, list):
+        return " ".join(
+            msg.get("content", "") for msg in messages if isinstance(msg, dict)
+        )
+    if "text" in example:
+        return str(example.get("text", ""))
+    return ""
+
+
+def _content_hash(text: str) -> str:
+    """Deterministic hash for deduplication (stable across runs)."""
+    return hashlib.md5(text.encode("utf-8")).hexdigest()
 
 
 def load_initial_dataset(
@@ -259,6 +277,25 @@ Generate an alternative assistant response:"""
     return system_prompt, user_prompt
 
 
+def _passes_filter(
+    example: Dict[str, Any],
+    min_length: int,
+    max_length: int,
+    remove_duplicates: bool,
+    seen: set,
+) -> bool:
+    """Return True if example passes length and (optionally) duplicate check."""
+    text = _get_example_text(example)
+    if len(text) < min_length or len(text) > max_length:
+        return False
+    if remove_duplicates:
+        h = _content_hash(text)
+        if h in seen:
+            return False
+        seen.add(h)
+    return True
+
+
 def augment_dataset(
     initial_data: List[Dict[str, Any]],
     api_url: str = "http://localhost:1234",
@@ -266,14 +303,23 @@ def augment_dataset(
     num_augmentations_per_example: int = 2,
     delay: float = 0.5,
     use_structured_output: bool = False,
+    min_length: int = 10,
+    max_length: int = 2000,
+    remove_duplicates: bool = True,
+    max_attempts_per_example: Optional[int] = None,
     save_path: Optional[Path] = None,
-    save_format: str = "json"
+    save_format: str = "json",
 ) -> List[Dict[str, Any]]:
     """
-    Augment dataset using LM Studio
-    
+    Augment dataset using LM Studio with built-in quality filtering.
+
+    Only examples that pass length and duplicate checks are kept, so
+    num_augmentations_per_example is the number of unique valid samples per seed.
+    Generation continues per example until that many valid samples are collected
+    or max_attempts_per_example is reached.
+
     Input and output data must be in messages format.
-    
+
     Args:
         initial_data: Initial dataset examples in messages format (each must have 'messages' key)
         api_url: LM Studio API URL
@@ -282,46 +328,62 @@ def augment_dataset(
             - 'expand': Generate new detailed assistant responses
             - 'variation': Create new user messages that ask similar things in different ways
             - 'response_variation': Generate alternative assistant responses with different approaches/styles
-        num_augmentations_per_example: Number of augmentations per example
+        num_augmentations_per_example: Number of unique valid augmentations to keep per example
         delay: Delay between API calls (seconds)
         use_structured_output: Use JSON structured output format
+        min_length: Minimum total text length; samples below are dropped (default 10)
+        max_length: Maximum total text length; samples above are dropped (default 2000)
+        remove_duplicates: If True, only keep one copy of each content (default True)
+        max_attempts_per_example: Max API calls per example when chasing num_augmentations_per_example
+            (default 3 * num_augmentations_per_example)
         save_path: Optional path to save augmented data (default: data/generated/augmented_dataset.json)
         save_format: Format to save ('json' or 'jsonl')
-    
+
     Returns:
-        Augmented dataset in messages format
+        Augmented and filtered dataset in messages format (no separate filter step needed).
     """
+    if max_attempts_per_example is None:
+        max_attempts_per_example = max(num_augmentations_per_example * 3, 10)
+
     augmented_data = []
-    
+    seen: set = set()
+
     logger.info(f"Augmenting dataset with '{augmentation_strategy}' strategy")
-    logger.info(f"Generating {num_augmentations_per_example} augmentations per example")
-    
+    logger.info(
+        f"Target: {num_augmentations_per_example} unique valid samples per example "
+        f"(filter: length [{min_length}, {max_length}], remove_duplicates={remove_duplicates})"
+    )
+
     response_format = {"type": "json_object"} if use_structured_output else None
-    
+
     for i, example in enumerate(initial_data):
-        augmented_data.append(example)  # Keep original
-        
-        for aug_idx in range(num_augmentations_per_example):
+        # Include original only if it passes the same filter
+        if _passes_filter(example, min_length, max_length, remove_duplicates, seen):
+            augmented_data.append(example)
+
+        collected = 0
+        attempts = 0
+
+        while collected < num_augmentations_per_example and attempts < max_attempts_per_example:
+            attempts += 1
             try:
                 system_prompt, user_prompt = create_augmentation_prompts(
                     example, augmentation_strategy
                 )
-                
-                # Modify prompts for structured output
+
                 if use_structured_output:
                     if augmentation_strategy == "paraphrase":
                         user_prompt += '\n\nRespond in JSON format: {"message": "your paraphrased message here"}'
                     elif augmentation_strategy == "expand":
                         user_prompt += '\n\nRespond in JSON format: {"response": "your response here"}'
-                
+
                 generated = generate_with_lm_studio(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
                     api_url=api_url,
-                    response_format=response_format
+                    response_format=response_format,
                 )
-                
-                # Parse structured output
+
                 if use_structured_output:
                     try:
                         generated_json = json.loads(generated)
@@ -330,48 +392,55 @@ def augment_dataset(
                         elif augmentation_strategy == "expand":
                             generated = generated_json.get("response", generated)
                     except json.JSONDecodeError:
-                        logger.warning(f"Failed to parse JSON output, using raw text")
-                
-                # Create augmented example by modifying messages
-                messages = example.get('messages', example.get('conversations', [])).copy()
+                        logger.warning("Failed to parse JSON output, using raw text")
+
+                messages = list(
+                    example.get("messages", example.get("conversations", []))
+                )
                 aug_example = example.copy()
-                
-                # Modify messages based on strategy
+
                 if augmentation_strategy == "paraphrase":
-                    # Replace the last user message with paraphrased version
-                    for i in range(len(messages) - 1, -1, -1):
-                        if messages[i].get('role') == 'user':
-                            messages[i] = {"role": "user", "content": generated}
+                    for j in range(len(messages) - 1, -1, -1):
+                        if messages[j].get("role") == "user":
+                            messages[j] = {"role": "user", "content": generated}
                             break
                 elif augmentation_strategy == "expand":
-                    # Add new assistant response
                     messages.append({"role": "assistant", "content": generated})
                 elif augmentation_strategy == "variation":
-                    # Replace the last user message with variation
-                    for i in range(len(messages) - 1, -1, -1):
-                        if messages[i].get('role') == 'user':
-                            messages[i] = {"role": "user", "content": generated}
+                    for j in range(len(messages) - 1, -1, -1):
+                        if messages[j].get("role") == "user":
+                            messages[j] = {"role": "user", "content": generated}
                             break
                 elif augmentation_strategy == "response_variation":
-                    # Replace the last assistant message with variation
-                    for i in range(len(messages) - 1, -1, -1):
-                        if messages[i].get('role') == 'assistant':
-                            messages[i] = {"role": "assistant", "content": generated}
+                    for j in range(len(messages) - 1, -1, -1):
+                        if messages[j].get("role") == "assistant":
+                            messages[j] = {"role": "assistant", "content": generated}
                             break
-                
-                # Store augmented messages
-                aug_example['messages'] = messages
-                augmented_data.append(aug_example)
+
+                aug_example["messages"] = messages
+
+                if _passes_filter(
+                    aug_example, min_length, max_length, remove_duplicates, seen
+                ):
+                    augmented_data.append(aug_example)
+                    collected += 1
+
                 time.sleep(delay)
-                
+
             except Exception as e:
-                logger.warning(f"Failed to augment example {i}, augmentation {aug_idx}: {e}")
-                continue
-        
+                logger.warning(
+                    f"Failed to augment example {i}, attempt {attempts}: {e}"
+                )
+
         if (i + 1) % 10 == 0:
-            logger.info(f"Augmented {i + 1}/{len(initial_data)} examples")
-    
-    logger.info(f"Augmentation complete: {len(initial_data)} -> {len(augmented_data)} examples")
+            logger.info(
+                f"Augmented {i + 1}/{len(initial_data)} examples "
+                f"({len(augmented_data)} total unique valid so far)"
+            )
+
+    logger.info(
+        f"Augmentation complete: {len(initial_data)} seeds -> {len(augmented_data)} unique valid examples"
+    )
     
     # Auto-save if save_path is provided or use default
     if save_path is None:
@@ -410,25 +479,14 @@ def filter_quality(
     seen = set()
     
     for example in data:
-        # Extract text from messages for length check
-        text = ""
-        messages = example.get('messages', example.get('conversations', []))
-        if messages and isinstance(messages, list):
-            text = " ".join([msg.get('content', '') for msg in messages if isinstance(msg, dict)])
-        elif 'text' in example:
-            text = str(example.get('text', ''))
-        
-        # Length filter
+        text = _get_example_text(example)
         if len(text) < min_length or len(text) > max_length:
             continue
-        
-        # Duplicate filter
         if remove_duplicates:
-            text_hash = hash(text)
-            if text_hash in seen:
+            h = _content_hash(text)
+            if h in seen:
                 continue
-            seen.add(text_hash)
-        
+            seen.add(h)
         filtered.append(example)
     
     logger.info(f"Quality filtering: {len(data)} -> {len(filtered)} examples")

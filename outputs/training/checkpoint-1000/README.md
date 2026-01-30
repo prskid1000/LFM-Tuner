@@ -1,9 +1,9 @@
 ---
-base_model: LiquidAI/LFM2.5-1.2B-Thinking
+base_model: LiquidAI/LFM2.5-1.2B-Instruct
 library_name: peft
 pipeline_tag: text-generation
 tags:
-- base_model:adapter:LiquidAI/LFM2.5-1.2B-Thinking
+- base_model:adapter:LiquidAI/LFM2.5-1.2B-Instruct
 - lora
 - sft
 - transformers

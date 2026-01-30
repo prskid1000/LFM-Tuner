@@ -7,7 +7,7 @@
     "parent_library": "transformers.models.lfm2.modeling_lfm2",
     "unsloth_fixed": true
   },
-  "base_model_name_or_path": "LiquidAI/LFM2.5-1.2B-Thinking",
+  "base_model_name_or_path": "LiquidAI/LFM2.5-1.2B-Instruct",
   "bias": "none",
   "corda_config": null,
   "ensure_weight_tying": false,
@@ -33,13 +33,13 @@
   "rank_pattern": {},
   "revision": null,
   "target_modules": [
-    "o_proj",
-    "up_proj",
-    "q_proj",
-    "k_proj",
     "v_proj",
+    "down_proj",
     "gate_proj",
-    "down_proj"
+    "up_proj",
+    "o_proj",
+    "q_proj",
+    "k_proj"
   ],
   "target_parameters": null,
   "task_type": "CAUSAL_LM",

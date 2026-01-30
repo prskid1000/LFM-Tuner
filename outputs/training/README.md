@@ -1,5 +1,5 @@
 ---
-base_model: LiquidAI/LFM2.5-1.2B-Thinking
+base_model: LiquidAI/LFM2.5-1.2B-Instruct
 library_name: transformers
 model_name: training
 tags:
@@ -12,7 +12,7 @@ licence: license
 
 # Model Card for training
 
-This model is a fine-tuned version of [LiquidAI/LFM2.5-1.2B-Thinking](https://huggingface.co/LiquidAI/LFM2.5-1.2B-Thinking).
+This model is a fine-tuned version of [LiquidAI/LFM2.5-1.2B-Instruct](https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct).
 It has been trained using [TRL](https://github.com/huggingface/trl).
 
 ## Quick start

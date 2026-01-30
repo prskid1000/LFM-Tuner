@@ -3,976 +3,66 @@
     "messages": [
       {
         "role": "user",
-        "content": "Is it possible to return an item after making a purchase?"
+        "content": "Could you please confirm the delivery status for Ramesh Kirana?"
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Yes, returns can be processed anytime before final confirmation.\"}"
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Kirana\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nIs it possible to return an item after making a purchase?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, returns can be processed anytime before final confirmation.\"}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nCould you please confirm the delivery status for Ramesh Kirana?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Kirana\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Could you confirm if the delivery status is now finalized?"
+        "content": "Is it possible to switch the payment method after I’ve already set it up?"
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
+        "content": "{\"message\":\"Yes, payment details can be adjusted before final confirmation.\"}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nCould you confirm if the delivery status is now finalized?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, confirmation completes the customer visit.\"}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nIs it possible to switch the payment method after I’ve already set it up?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, payment details can be adjusted before final confirmation.\"}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Return one 500ml bottle of expired Pepsi to Moonlight Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nReturn one 500ml bottle of expired Pepsi to Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can I skip using composite materials in my design?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, individual actions can be used instead.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan I skip using composite materials in my design?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, individual actions can be used instead.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Withdraw the complete amount of cash from Deepak Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWithdraw the complete amount of cash from Deepak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "I need to return 6 bottles of expired 500ml Pepsi purchased from New Rajesh Shop."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"New Rajesh Shop\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":6}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nI need to return 6 bottles of expired 500ml Pepsi purchased from New Rajesh Shop.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"New Rajesh Shop\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":6}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can you arrange a van delivery for Sita Stores? We need 8 bottles of Coke 500ml."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Taking you to van sales with Coca Cola added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sita Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":8}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan you arrange a van delivery for Sita Stores? We need 8 bottles of Coke 500ml.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Taking you to van sales with Coca Cola added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sita Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":8}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please verify if the delivery for Nitin Stores has been confirmed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Nitin Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease verify if the delivery for Nitin Stores has been confirmed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Nitin Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can you provide a delivery summary report for Ramesh Mart?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Navigating to delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Mart\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan you provide a delivery summary report for Ramesh Mart?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Mart\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please return the 600ml Maaza that has expired, purchased at Anjali Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Anjali Kirana\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease return the 600ml Maaza that has expired, purchased at Anjali Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Anjali Kirana\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please unload 10 bottles of Limca, each 2 liters in size."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Limca 2L\",\"qty\":10}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease unload 10 bottles of Limca, each 2 liters in size.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Limca 2L\",\"qty\":10}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove 11 packets of Hide & Seek biscuits from the inventory."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove 11 packets of Hide & Seek biscuits from the inventory.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Do I have to perform an unload every day?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Unload is required for damaged or excess stock, not always daily.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nDo I have to perform an unload every day?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Unload is required for damaged or excess stock, not always daily.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove all broken or damaged items from my car."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Loading all damaged stock for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove all broken or damaged items from my car.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Loading all damaged stock for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is it possible to complete the route without using cash?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, pending payments can be settled later if allowed.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs it possible to complete the route without using cash?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, pending payments can be settled later if allowed.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is there a way to reverse a skip?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, as long as the route is still active, skipped visits can be revisited.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs there a way to reverse a skip?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, as long as the route is still active, skipped visits can be revisited.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove 7 packets of Bingo Tedhe Medhe from inventory."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bingo Tedhe Medhe\",\"qty\":7}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove 7 packets of Bingo Tedhe Medhe from inventory.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bingo Tedhe Medhe\",\"qty\":7}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please exchange one damaged 2L bottle of Coke purchased at Lucky Stores."
+        "content": "I'd like to return a 2L damaged Coke bottle I purchased at Lucky Stores."
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nPlease exchange one damaged 2L bottle of Coke purchased at Lucky Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nI'd like to return a 2L damaged Coke bottle I purchased at Lucky Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Verify the delivery confirmation screen for Kiran Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Kiran Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nVerify the delivery confirmation screen for Kiran Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Kiran Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "What happens if I skip too many customers?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWhat happens if I skip too many customers?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Return 2 Frooti 200ml from Krishna Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Krishna Stores\",\"returnItems\":[{\"product\":\"Frooti 200ml\",\"qty\":2}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nReturn 2 Frooti 200ml from Krishna Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Krishna Stores\",\"returnItems\":[{\"product\":\"Frooti 200ml\",\"qty\":2}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can I edit composite before confirm?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan I edit composite before confirm?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please avoid visiting Om Traders for now as they are currently undergoing shop renovations."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease avoid visiting Om Traders for now as they are currently undergoing shop renovations.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is there a way to bypass composite screen checks in certain scenarios?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, it pre-fills and skips intermediate steps.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs there a way to bypass composite screen checks in certain scenarios?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, it pre-fills and skips intermediate steps.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please proceed past Radha Stores as the shop is currently closed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease proceed past Radha Stores as the shop is currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Generate an off-route order for Pooja Mart, including 9 units of 500ml Sprite, and process the payment."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Preparing off-route sale.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Pooja Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":9}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route order for Pooja Mart, including 9 units of 500ml Sprite, and process the payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing off-route sale.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Pooja Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":9}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Generate an off-route delivery for Neelam Mart, including selling 7 units of Sprite 500ml and collecting the payment."
+        "content": "Generate an off-route visit for Neelam Mart to sell 7 units of Sprite 500ml and collect payment."
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route delivery for Neelam Mart, including selling 7 units of Sprite 500ml and collecting the payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route visit for Neelam Mart to sell 7 units of Sprite 500ml and collect payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "I'd like to sell 8 bottles of 500ml Pepsi to Rathi Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rathi Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nI'd like to sell 8 bottles of 500ml Pepsi to Rathi Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rathi Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Generate an off-route delivery for Neelam Mart, selling 7 bottles of Sprite 500ml and collecting the payment."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route delivery for Neelam Mart, selling 7 bottles of Sprite 500ml and collecting the payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is it possible to add or load items after the route has already started?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, manual load allows adding items anytime during the route.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs it possible to add or load items after the route has already started?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, manual load allows adding items anytime during the route.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please gather ₹850 in cash from Anjali Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease gather ₹850 in cash from Anjali Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Collect 950 cash from Moonlight Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCollect 950 cash from Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Confirm delivery for Vinod Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nConfirm delivery for Vinod Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Has the delivery confirmation been finalized?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nHas the delivery confirmation been finalized?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, confirmation completes the customer visit.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Remove all defective items from the inventory immediately."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove all defective items from the inventory immediately.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Could you verify the delivery status for Om Traders?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCould you verify the delivery status for Om Traders?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Avoid visiting Gopal Stores for now as it's currently closed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Gopal Stores\",\"reason\":\"shop closed\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nAvoid visiting Gopal Stores for now as it's currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Gopal Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please add an off-route stop at Shankar Stores to deliver 5 units of 500ml Coca-Cola and collect the full payment upon delivery."
+        "content": "Please add off-route stop at Shankar Stores, sell 5 units of 500ml Coke, and collect the full payment."
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Shankar Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":5}],\"amount\":\"FULL\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nPlease add an off-route stop at Shankar Stores to deliver 5 units of 500ml Coca-Cola and collect the full payment upon delivery.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Shankar Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":5}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Collect 700 cash from Krishna Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Krishna Stores\",\"amount\":700}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCollect 700 cash from Krishna Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Krishna Stores\",\"amount\":700}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please return two expired 500ml bottles of Limca from Patel Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Patel Kirana\",\"returnItems\":[{\"product\":\"Limca 500ml\",\"qty\":2}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease return two expired 500ml bottles of Limca from Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Patel Kirana\",\"returnItems\":[{\"product\":\"Limca 500ml\",\"qty\":2}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Grab $1800 in cash from City Super Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"City Super Mart\",\"amount\":1800}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nGrab $1800 in cash from City Super Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"City Super Mart\",\"amount\":1800}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is it possible to unload only part of my current load?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, partial unloads are supported.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs it possible to unload only part of my current load?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, partial unloads are supported.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Return 2 expired Limca 500ml from Patel Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Patel Kirana\",\"returnItems\":[{\"product\":\"Limca 500ml\",\"qty\":2}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nReturn 2 expired Limca 500ml from Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Patel Kirana\",\"returnItems\":[{\"product\":\"Limca 500ml\",\"qty\":2}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Remove any defective items from the van immediately."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen with all damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove any defective items from the van immediately.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen with all damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Remove all damaged stock from my van."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload with damaged stock selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove all damaged stock from my van.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with damaged stock selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Generate an offline transaction for Pooja Mart, selling 9 units of Sprite 500ml and process the payment."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Preparing off-route sale.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Pooja Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":9}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an offline transaction for Pooja Mart, selling 9 units of Sprite 500ml and process the payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing off-route sale.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Pooja Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":9}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Does app support partial delivery?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, partial deliveries are supported before final confirmation.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nDoes app support partial delivery?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, partial deliveries are supported before final confirmation.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can I finish route without cash?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, pending payments can be settled later if allowed.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan I finish route without cash?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, pending payments can be settled later if allowed.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Add manual load of Dairy Milk 24g qty 50."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nAdd manual load of Dairy Milk 24g qty 50.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please send me 10 packs of Lays Cream & Onion that are damaged."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload with specified damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Lays Cream & Onion\",\"qty\":10}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease send me 10 packs of Lays Cream & Onion that are damaged.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with specified damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Lays Cream & Onion\",\"qty\":10}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Create offroute visit for Sai Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sai Kirana\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCreate offroute visit for Sai Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route visit created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sai Kirana\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please withdraw the entire cash balance from Patel Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease withdraw the entire cash balance from Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please confirm the delivery status for Mehul Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mehul Kirana\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease confirm the delivery status for Mehul Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mehul Kirana\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please add Offroute Mahavir Stores to the list—sell 8 units of Pepsi 500ml and ensure full payment is collected."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Setting up off-route sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Mahavir Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease add Offroute Mahavir Stores to the list—sell 8 units of Pepsi 500ml and ensure full payment is collected.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Mahavir Stores\",\"saleItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":8}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove 11 packets of Hide & Seek biscuits from the stock."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove 11 packets of Hide & Seek biscuits from the stock.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please verify if the delivery has been confirmed for Gopal Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Gopal Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease verify if the delivery has been confirmed for Gopal Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Gopal Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Immediately remove all defective inventory from the warehouse."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Gathering all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nImmediately remove all defective inventory from the warehouse.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Gathering all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Has the delivery confirmation been confirmed as complete?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nHas the delivery confirmation been confirmed as complete?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, confirmation completes the customer visit.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Withdraw the entire cash amount from Deepak Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWithdraw the entire cash amount from Deepak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please add an off-route sale for Vinayak Stores, selling 6 units of Coke 500ml, and ensure the full payment is collected."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease add an off-route sale for Vinayak Stores, selling 6 units of Coke 500ml, and ensure the full payment is collected.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Create offroute visit for Meena Shop, sell Sprite 500ml qty 6 and take full payment."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Setting up the complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Meena Shop\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCreate offroute visit for Meena Shop, sell Sprite 500ml qty 6 and take full payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up the complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Meena Shop\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Remove all defective items immediately."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove all defective items immediately.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Looking to buy 6 bottles of Mountain Dew 500ml from the van sale—please deliver to Raju General Store."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Taking you to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Raju General Store\",\"saleItems\":[{\"product\":\"Mountain Dew 500ml\",\"qty\":6}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nLooking to buy 6 bottles of Mountain Dew 500ml from the van sale—please deliver to Raju General Store.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Taking you to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Raju General Store\",\"saleItems\":[{\"product\":\"Mountain Dew 500ml\",\"qty\":6}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please manually place 10 bottles of Sting Energy Drink on the shelf."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease manually place 10 bottles of Sting Energy Drink on the shelf.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Could you please confirm if the delivery has been processed for Radha Stores?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Radha Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCould you please confirm if the delivery has been processed for Radha Stores?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Radha Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Remove all defective inventory immediately."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Gathering all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove all defective inventory immediately.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Gathering all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please skip Mahesh Kirana as the owner is currently unavailable."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mahesh Kirana\",\"reason\":\"owner not available\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease skip Mahesh Kirana as the owner is currently unavailable.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mahesh Kirana\",\"reason\":\"owner not available\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please manually enter a stock addition for Parle-G 100g with a quantity of 60 units."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease manually enter a stock addition for Parle-G 100g with a quantity of 60 units.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Take back 1 expired Pepsi 500ml from Moonlight Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nTake back 1 expired Pepsi 500ml from Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Looking to sell 4 bottles of Sprite Zero at Moonlight Mart—any interest in purchasing?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Moonlight Mart\",\"saleItems\":[{\"product\":\"Sprite Zero\",\"qty\":4}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nLooking to sell 4 bottles of Sprite Zero at Moonlight Mart—any interest in purchasing?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Moonlight Mart\",\"saleItems\":[{\"product\":\"Sprite Zero\",\"qty\":4}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Generate an off-route stop record for New Rajesh Shop."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Off-route visit is being created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"New Rajesh Shop\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route stop record for New Rajesh Shop.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route visit is being created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"New Rajesh Shop\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please retrieve $950 in cash from Moonlight Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease retrieve $950 in cash from Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Sell 5 Thums Up 500ml to Aman Traders."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening van sales with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Aman Traders\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":5}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nSell 5 Thums Up 500ml to Aman Traders.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales with selected items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Aman Traders\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":5}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please check the status of the delivery for Mahavir Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mahavir Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease check the status of the delivery for Mahavir Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mahavir Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can you explain what \"full cash\" means in a financial or transactional context?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Full cash means collecting the entire outstanding balance from the customer.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan you explain what \"full cash\" means in a financial or transactional context?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Full cash means collecting the entire outstanding balance from the customer.\"}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nPlease add off-route stop at Shankar Stores, sell 5 units of 500ml Coke, and collect the full payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Shankar Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":5}],\"amount\":\"FULL\"}}}<|im_end|>\n"
   },
   {
     "messages": [
@@ -991,715 +81,1274 @@
     "messages": [
       {
         "role": "user",
-        "content": "Remove Rahul Stores from my route and ensure I sell 10 units of Coca-Cola 500ml, collecting the full payment upon delivery."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Adding off-route visit and preparing sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rahul Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nRemove Rahul Stores from my route and ensure I sell 10 units of Coca-Cola 500ml, collecting the full payment upon delivery.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding off-route visit and preparing sale with cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rahul Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is the app designed to automatically save my progress as I use it?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, your progress is saved automatically at every step.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs the app designed to automatically save my progress as I use it?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, your progress is saved automatically at every step.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Update the record for off-route customer Rohit Stores by recording a sale of 4 units of Coca-Cola 500ml and ensure full payment is collected in cash."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Preparing off-route sale and payment.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":4}],\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nUpdate the record for off-route customer Rohit Stores by recording a sale of 4 units of Coca-Cola 500ml and ensure full payment is collected in cash.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing off-route sale and payment.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":4}],\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please skip Radha Stores as the shop is currently closed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease skip Radha Stores as the shop is currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is it possible to return an item after making the purchase?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, returns can be processed anytime before final confirmation.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs it possible to return an item after making the purchase?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, returns can be processed anytime before final confirmation.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Avoid contacting Mehul Kirana as the owner is currently unavailable."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mehul Kirana\",\"reason\":\"owner not present\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nAvoid contacting Mehul Kirana as the owner is currently unavailable.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mehul Kirana\",\"reason\":\"owner not present\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please retrieve 2 bottles of Pepsi, 500ml each, from Aman Traders."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Processing return for Aman Traders.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Aman Traders\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease retrieve 2 bottles of Pepsi, 500ml each, from Aman Traders.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return for Aman Traders.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Aman Traders\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove 11 packets of Hide & Seek biscuits from stock."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove 11 packets of Hide & Seek biscuits from stock.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Steal 2200 rupees from New Rajesh Shop."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"New Rajesh Shop\",\"amount\":2200}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nSteal 2200 rupees from New Rajesh Shop.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"New Rajesh Shop\",\"amount\":2200}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Withdraw the total cash amount from Deepak Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWithdraw the total cash amount from Deepak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Deepak Stores\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Avoid visiting Gopal Stores as the shop is currently closed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Gopal Stores\",\"reason\":\"shop closed\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nAvoid visiting Gopal Stores as the shop is currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Gopal Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Skip Mark Vijay Traders because the owner is currently unavailable."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Customer visit skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vijay Traders\",\"reason\":\"owner not available\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nSkip Mark Vijay Traders because the owner is currently unavailable.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer visit skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vijay Traders\",\"reason\":\"owner not available\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Unload all damaged products now."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nUnload all damaged products now.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting all damaged items for unloading.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can you clarify if using a composite type is mandatory or optional in this case?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, individual actions can be used instead.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan you clarify if using a composite type is mandatory or optional in this case?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, individual actions can be used instead.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Withdraw ₹640 from Sai Kirana's account."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Sai Kirana\",\"amount\":640}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWithdraw ₹640 from Sai Kirana's account.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Sai Kirana\",\"amount\":640}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Move on from customer Radha Stores—shop is currently closed."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nMove on from customer Radha Stores—shop is currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping Radha Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Radha Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Include an off-route customer, Lucky Stores, in the delivery plan."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Adding Lucky Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Lucky Stores\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nInclude an off-route customer, Lucky Stores, in the delivery plan.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Lucky Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Lucky Stores\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please remove 11 packs of Hide & Seek biscuits from the stock."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease remove 11 packs of Hide & Seek biscuits from the stock.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Hide & Seek\",\"qty\":11}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "What are the consequences if I keep missing appointments with clients?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWhat are the consequences if I keep missing appointments with clients?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can I get confirmation that my order has been delivered?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan I get confirmation that my order has been delivered?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, confirmation completes the customer visit.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Return one damaged 2L Fanta bottle to Sai Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sai Kirana\",\"returnItems\":[{\"product\":\"Fanta 2L\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nReturn one damaged 2L Fanta bottle to Sai Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sai Kirana\",\"returnItems\":[{\"product\":\"Fanta 2L\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Return one defective bottle of Pepsi Black to Raju General Store."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Raju General Store\",\"returnItems\":[{\"product\":\"Pepsi Black\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nReturn one defective bottle of Pepsi Black to Raju General Store.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Raju General Store\",\"returnItems\":[{\"product\":\"Pepsi Black\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "What happens if I accidentally leave items in the vehicle?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"You can unload anytime before closing the route for the day.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWhat happens if I accidentally leave items in the vehicle?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"You can unload anytime before closing the route for the day.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "I’d like to return one 500ml bottle of expired Pepsi purchased at Moonlight Mart."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nI’d like to return one 500ml bottle of expired Pepsi purchased at Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please retrieve the complete cash amount from Ganesh Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full outstanding balance.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Ganesh Stores\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease retrieve the complete cash amount from Ganesh Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full outstanding balance.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Ganesh Stores\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Add off route customer Rathi Stores."
+        "content": "Can you add Rathi Stores as an off-route customer?"
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nAdd off route customer Rathi Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nCan you add Rathi Stores as an off-route customer?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Can I undo a skip?"
+        "content": "Go ahead and pick up 1100 cash from Star Kirana."
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Yes, as long as the route is still active, skipped visits can be revisited.\"}"
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Star Kirana\",\"amount\":1100}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nCan I undo a skip?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, as long as the route is still active, skipped visits can be revisited.\"}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nGo ahead and pick up 1100 cash from Star Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Star Kirana\",\"amount\":1100}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Generate an off-route stop for Gupta Stores."
+        "content": "I'd like to return a 500ml expired Pepsi bottle I bought at Moonlight Mart."
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Sure, creating an off-route visit for Gupta Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Gupta Stores\"}}}"
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route stop for Gupta Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Sure, creating an off-route visit for Gupta Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Gupta Stores\"}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nI'd like to return a 500ml expired Pepsi bottle I bought at Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Moonlight Mart\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":1}]}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Please pick up four bottles of Fanta 500ml from Mahavir Stores."
+        "content": "Please add the off-route customer Vinayak Stores, sell 6 bottles of Coke 500ml, and collect the full cash payment."
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Mahavir Stores\",\"returnItems\":[{\"product\":\"Fanta 500ml\",\"qty\":4}]}}}"
+        "content": "{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nPlease pick up four bottles of Fanta 500ml from Mahavir Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Mahavir Stores\",\"returnItems\":[{\"product\":\"Fanta 500ml\",\"qty\":4}]}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nPlease add the off-route customer Vinayak Stores, sell 6 bottles of Coke 500ml, and collect the full cash payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Sell 2 liters of Limca to Rohit Stores."
+        "content": "I’d like to return one 1.25L damaged Coke bottle from Rathi Stores, please."
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}"
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Rathi Stores\",\"returnItems\":[{\"product\":\"Coca Cola 1.25L\",\"qty\":1}]}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nSell 2 liters of Limca to Rohit Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Rohit Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nI’d like to return one 1.25L damaged Coke bottle from Rathi Stores, please.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Rathi Stores\",\"returnItems\":[{\"product\":\"Coca Cola 1.25L\",\"qty\":1}]}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Are you required to collect cash in your transactions?"
+        "content": "Please manually add a stock load of Kurkure Masala Munch, quantity 30 units."
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Cash collection depends on customer payment terms.\"}"
+        "content": "{\"message\":\"Opening manual load with Kurkure added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Masala Munch\",\"qty\":30}]}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nAre you required to collect cash in your transactions?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection depends on customer payment terms.\"}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nPlease manually add a stock load of Kurkure Masala Munch, quantity 30 units.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load with Kurkure added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Masala Munch\",\"qty\":30}]}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Please retrieve the complete cash amount from Patel Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease retrieve the complete cash amount from Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is using composite materials faster than traditional options in manufacturing?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, it combines multiple steps into one workflow.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs using composite materials faster than traditional options in manufacturing?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, it combines multiple steps into one workflow.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Will I receive a confirmation once my order is delivered?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, confirmation completes the customer visit.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWill I receive a confirmation once my order is delivered?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, confirmation completes the customer visit.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please add the off-route customer Patel Kirana to the list."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Adding Patel Kirana as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Patel Kirana\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease add the off-route customer Patel Kirana to the list.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Patel Kirana as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Patel Kirana\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Unload 6 packets of Bourbon biscuits."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bourbon Biscuits\",\"qty\":6}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nUnload 6 packets of Bourbon biscuits.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Bourbon Biscuits\",\"qty\":6}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please withdraw $1500 in cash from Rahul Agencies."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease withdraw $1500 in cash from Rahul Agencies.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can composite be skipped, or is it mandatory?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, individual actions can be used instead.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan composite be skipped, or is it mandatory?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, individual actions can be used instead.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is composite support return statements?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, composite workflows can include returns as well.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs composite support return statements?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, composite workflows can include returns as well.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please add a manual entry for Dairy Milk, 24g, with a quantity of 50."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease add a manual entry for Dairy Milk, 24g, with a quantity of 50.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please retrieve the full cash amount from Patel Kirana."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease retrieve the full cash amount from Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting full pending amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Patel Kirana\",\"amount\":\"FULL\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "What are the consequences of missing too many customer interactions?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWhat are the consequences of missing too many customer interactions?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipped visits are tracked — frequent skips may require supervisor review.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "What’s the current number of stops remaining on my delivery route?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nWhat’s the current number of stops remaining on my delivery route?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Can you tell me how many more stops I have on my delivery route?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCan you tell me how many more stops I have on my delivery route?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Is using composite materials faster than traditional options in terms of production?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Yes, it combines multiple steps into one workflow.\"}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nIs using composite materials faster than traditional options in terms of production?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, it combines multiple steps into one workflow.\"}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Collect 500 cash from Rohit Stores."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rohit Stores\",\"amount\":500}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCollect 500 cash from Rohit Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rohit Stores\",\"amount\":500}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Could you check the status of the delivery for Aman Traders?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Aman Traders\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nCould you check the status of the delivery for Aman Traders?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Aman Traders\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please manually add a stock entry for Oreo Vanilla with a quantity of 40."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Oreo Vanilla\",\"qty\":40}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease manually add a stock entry for Oreo Vanilla with a quantity of 40.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Oreo Vanilla\",\"qty\":40}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "I'd like to sell 20 bottles of Bisleri 1L to Lucky Stores. Can you help with the transaction?"
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Opening van sales with Bisleri added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Lucky Stores\",\"saleItems\":[{\"product\":\"Bisleri 1L\",\"qty\":20}]}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nI'd like to sell 20 bottles of Bisleri 1L to Lucky Stores. Can you help with the transaction?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales with Bisleri added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Lucky Stores\",\"saleItems\":[{\"product\":\"Bisleri 1L\",\"qty\":20}]}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please skip customer Om Traders as their store is currently undergoing renovations."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease skip customer Om Traders as their store is currently undergoing renovations.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Please collect an amount of 750 rupees from Raju General Store."
-      },
-      {
-        "role": "assistant",
-        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Raju General Store\",\"amount\":750}}}"
-      }
-    ],
-    "text": "<|startoftext|><|im_start|>user\nPlease collect an amount of 750 rupees from Raju General Store.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Raju General Store\",\"amount\":750}}}<|im_end|>\n"
-  },
-  {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Avoid Ramesh Mart today as it’s closed."
+        "content": "Skip Ramesh Mart due to shop closed today."
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nAvoid Ramesh Mart today as it’s closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nSkip Ramesh Mart due to shop closed today.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Set up an off-route delivery for Laxmi Mart, delivering 12 units of 500ml Coca-Cola bottles and collect the full payment in cash."
+        "content": "Could you please provide a delivery summary for Ramesh Mart?"
       },
       {
         "role": "assistant",
-        "content": "{\"message\":\"Preparing complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Laxmi Mart\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":12}],\"amount\":\"FULL\"}}}"
+        "content": "{\"message\":\"Navigating to delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Mart\"}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nSet up an off-route delivery for Laxmi Mart, delivering 12 units of 500ml Coca-Cola bottles and collect the full payment in cash.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Laxmi Mart\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":12}],\"amount\":\"FULL\"}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nCould you please provide a delivery summary for Ramesh Mart?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Mart\"}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Please withdraw 1,500 rupees from Rahul Agencies."
+        "content": "Sell 20 bottles of Bisleri 1L to Lucky Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales with Bisleri added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Lucky Stores\",\"saleItems\":[{\"product\":\"Bisleri 1L\",\"qty\":20}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSell 20 bottles of Bisleri 1L to Lucky Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales with Bisleri added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Lucky Stores\",\"saleItems\":[{\"product\":\"Bisleri 1L\",\"qty\":20}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you check the delivery status for Vinod Stores?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you check the delivery status for Vinod Stores?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you help me return an expired 600ml Maaza bottle from Anjali Kirana?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Anjali Kirana\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":1}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you help me return an expired 600ml Maaza bottle from Anjali Kirana?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening returns screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Anjali Kirana\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":1}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you confirm the delivery status for Shankar Stores?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Shankar Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you confirm the delivery status for Shankar Stores?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Shankar Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Looking to sell 9 Thums Up 500ml bottles—any interest from City Super Mart?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"City Super Mart\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":9}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nLooking to sell 9 Thums Up 500ml bottles—any interest from City Super Mart?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"City Super Mart\",\"saleItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":9}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Do van sale of 4 Sprite Zero for Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Moonlight Mart\",\"saleItems\":[{\"product\":\"Sprite Zero\",\"qty\":4}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nDo van sale of 4 Sprite Zero for Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Moonlight Mart\",\"saleItems\":[{\"product\":\"Sprite Zero\",\"qty\":4}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you include the off-route customer Sunrise Stores in the delivery schedule?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Sunrise Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sunrise Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you include the off-route customer Sunrise Stores in the delivery schedule?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Sunrise Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Sunrise Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please send me a reminder to unload at the end of the day."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease send me a reminder to unload at the end of the day.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually place 16 bottles of 7Up, 1L each, onto the shelf."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"7Up 1L\",\"qty\":16}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually place 16 bottles of 7Up, 1L each, onto the shelf.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"7Up 1L\",\"qty\":16}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect 950 cash from Moonlight Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCollect 950 cash from Moonlight Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Moonlight Mart\",\"amount\":950}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is a reason required when returning an item?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Providing a reason helps with accurate records.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nIs a reason required when returning an item?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Providing a reason helps with accurate records.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please provide the delivery information for Mohan Shop?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to the delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mohan Shop\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you please provide the delivery information for Mohan Shop?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Taking you to the delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mohan Shop\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Does the app automatically save my progress as I use it?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, your progress is saved automatically at every step.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nDoes the app automatically save my progress as I use it?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, your progress is saved automatically at every step.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Generate an off-route visit for Balaji Mart, sell 10 units of Sprite 500ml, and collect payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Balaji Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route visit for Balaji Mart, sell 10 units of Sprite 500ml, and collect payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up complete off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Balaji Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":10}],\"amount\":\"FULL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Confirm delivery for Om Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nConfirm delivery for Om Traders.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you confirm the van sale price for 5 units of Sprite 500ml at Star Kirana?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Star Kirana\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":5}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you confirm the van sale price for 5 units of Sprite 500ml at Star Kirana?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Star Kirana\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":5}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What's the number of remaining customers on my route?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWhat's the number of remaining customers on my route?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Mark Vijay Traders since the owner is unavailable."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer visit skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vijay Traders\",\"reason\":\"owner not available\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSkip Mark Vijay Traders since the owner is unavailable.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer visit skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Vijay Traders\",\"reason\":\"owner not available\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually place 24 bottles of Maaza, 600ml each, onto the shelf."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Maaza 600ml\",\"qty\":24}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually place 24 bottles of Maaza, 600ml each, onto the shelf.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Maaza 600ml\",\"qty\":24}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Get 2200 cash from New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"New Rajesh Shop\",\"amount\":2200}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nGet 2200 cash from New Rajesh Shop.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"New Rajesh Shop\",\"amount\":2200}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please take out 6 bottles of 2-liter Pepsi?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Pepsi 2L\",\"qty\":6}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you please take out 6 bottles of 2-liter Pepsi?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Preparing unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Pepsi 2L\",\"qty\":6}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please confirm the delivery status for Vinod Stores?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you please confirm the delivery status for Vinod Stores?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery confirmation screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Vinod Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 16 bottles of 7Up 1L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"7Up 1L\",\"qty\":16}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nManually load 16 bottles of 7Up 1L.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"7Up 1L\",\"qty\":16}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Open delivery confirmation for Mehul Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mehul Kirana\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nOpen delivery confirmation for Mehul Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mehul Kirana\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please pick up 2 Maaza 1L bottles from Shankar Stores and bring them back."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Shankar Stores\",\"returnItems\":[{\"product\":\"Maaza 1L\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease pick up 2 Maaza 1L bottles from Shankar Stores and bring them back.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Shankar Stores\",\"returnItems\":[{\"product\":\"Maaza 1L\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please collect ₹900 in cash from Shankar Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Shankar Stores\",\"amount\":900}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease collect ₹900 in cash from Shankar Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Shankar Stores\",\"amount\":900}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please return two 1L damaged Sprite bottles from Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Deepak Stores\",\"returnItems\":[{\"product\":\"Sprite 1L\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease return two 1L damaged Sprite bottles from Deepak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Deepak Stores\",\"returnItems\":[{\"product\":\"Sprite 1L\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Patel Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Patel Kirana as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Patel Kirana\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nAdd off route customer Patel Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Patel Kirana as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Patel Kirana\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you manually restock 10 bottles of Sting Energy Drink, please?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you manually restock 10 bottles of Sting Energy Drink, please?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you help me check the delivery details for Mohan Shop?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Taking you to the delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mohan Shop\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you help me check the delivery details for Mohan Shop?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Taking you to the delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Mohan Shop\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please remove 14 packets of Good Day biscuits from the stock?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Biscuits\",\"qty\":14}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you please remove 14 packets of Good Day biscuits from the stock?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Biscuits\",\"qty\":14}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create offroute visit for Neelam Mart, sell Sprite 500ml qty 7 and take payment."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCreate offroute visit for Neelam Mart, sell Sprite 500ml qty 7 and take payment.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route workflow.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Neelam Mart\",\"saleItems\":[{\"product\":\"Sprite 500ml\",\"qty\":7}],\"amount\":\"FULL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please return 2 bottles of Pepsi 500ml to Aman Traders."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return for Aman Traders.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Aman Traders\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease return 2 bottles of Pepsi 500ml to Aman Traders.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return for Aman Traders.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Aman Traders\",\"returnItems\":[{\"product\":\"Pepsi 500ml\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is it possible to switch the payment method after I've already made the initial payment?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, payment details can be adjusted before final confirmation.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nIs it possible to switch the payment method after I've already made the initial payment?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, payment details can be adjusted before final confirmation.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please return two damaged 600ml bottles of Maaza from National Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"National Stores\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease return two damaged 600ml bottles of Maaza from National Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"National Stores\",\"returnItems\":[{\"product\":\"Maaza 600ml\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please send the delivery confirmation for Ramesh Kirana?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Kirana\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you please send the delivery confirmation for Ramesh Kirana?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to delivery confirmation.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Ramesh Kirana\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you tell me how many customers still need to be visited on my route?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you tell me how many customers still need to be visited on my route?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can check that for you — just let me know if you'd like me to pull the route status.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is it possible to make changes to the composite before confirming?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nIs it possible to make changes to the composite before confirming?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please add off-route customer Vinayak Stores, sell 6 bottles of Coke 500ml, and collect full payment in cash."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease add off-route customer Vinayak Stores, sell 6 bottles of Coke 500ml, and collect full payment in cash.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Setting up off-route sale and cash collection.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_SALE_RETURN_CASH\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Coca Cola 500ml\",\"qty\":6}],\"amount\":\"FULL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please remove any damaged items from the van to ensure everything is in good condition."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease remove any damaged items from the van to ensure everything is in good condition.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Manually load 20 bottles of Aquafina 1L."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Aquafina 1L\",\"qty\":20}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nManually load 20 bottles of Aquafina 1L.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Aquafina 1L\",\"qty\":20}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect ₹850 from Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCollect ₹850 from Anjali Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "I'll have to pass on Ramesh Mart today since it's closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nI'll have to pass on Ramesh Mart today since it's closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer visit skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Mart\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remind me to unload at end of day."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nRemind me to unload at end of day.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please remove 14 packets of Good Day biscuits from the inventory."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Biscuits\",\"qty\":14}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease remove 14 packets of Good Day biscuits from the inventory.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload screen.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DEFAULT\",\"unloadItems\":[{\"product\":\"Good Day Biscuits\",\"qty\":14}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Will my vehicle have enough charge to get me through the rest of the day?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can help check that — want me to review current stock versus remaining deliveries?\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWill my vehicle have enough charge to get me through the rest of the day?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can help check that — want me to review current stock versus remaining deliveries?\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hey, could you remind me to unload at the end of the day?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nHey, could you remind me to unload at the end of the day?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Got it. I’ll remind you to unload when you’re nearing route completion.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is meant by \"full cash\" in financial terms?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Full cash means collecting the entire outstanding balance from the customer.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWhat is meant by \"full cash\" in financial terms?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Full cash means collecting the entire outstanding balance from the customer.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove the damaged inventory from the van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nRemove the damaged inventory from the van.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is the composite feature something I can skip?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, individual actions can be used instead.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nIs the composite feature something I can skip?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, individual actions can be used instead.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually place 18 bottles of 1L Slice into the system."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Slice 1L\",\"qty\":18}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually place 18 bottles of 1L Slice into the system.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Slice 1L\",\"qty\":18}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can we include the off-route customer Lucky Stores in the route planning?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Lucky Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Lucky Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan we include the off-route customer Lucky Stores in the route planning?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Lucky Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Lucky Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please return two damaged 500ml Thums Up bottles to the Sunrise Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sunrise Stores\",\"returnItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease return two damaged 500ml Thums Up bottles to the Sunrise Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Sunrise Stores\",\"returnItems\":[{\"product\":\"Thums Up 500ml\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually add a stock entry for Dairy Milk 24g with a quantity of 50."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually add a stock entry for Dairy Milk 24g with a quantity of 50.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load with Dairy Milk added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Dairy Milk 24g\",\"qty\":50}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please collect 1200 cash from Mahavir Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Mahavir Stores\",\"amount\":1200}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease collect 1200 cash from Mahavir Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Mahavir Stores\",\"amount\":1200}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add manual load of Parle-G 100g qty 60."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nAdd manual load of Parle-G 100g qty 60.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Set up an off-route visit for New Rajesh Shop."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route visit is being created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"New Rajesh Shop\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSet up an off-route visit for New Rajesh Shop.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route visit is being created.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"New Rajesh Shop\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can I make changes to the composite before finalizing?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan I make changes to the composite before finalizing?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, all details can be reviewed before final confirmation.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Clear damaged inventory from van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nClear damaged inventory from van.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with damaged items selected.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Create an offroute visit for Gupta Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Sure, creating an off-route visit for Gupta Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Gupta Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCreate an offroute visit for Gupta Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Sure, creating an off-route visit for Gupta Stores.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Gupta Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please skip Nitin Stores as the shop is currently closed."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Nitin Stores\",\"reason\":\"shop closed\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease skip Nitin Stores as the shop is currently closed.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Nitin Stores\",\"reason\":\"shop closed\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Add off route customer Deepak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Deepak Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Deepak Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nAdd off route customer Deepak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Deepak Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Deepak Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Sell 2 bottles of Limca 1L to Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSell 2 bottles of Limca 1L to Vinayak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Is unload mandatory daily?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Unload is required for damaged or excess stock, not always daily.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nIs unload mandatory daily?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Unload is required for damaged or excess stock, not always daily.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Generate an off-route visit for City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route customer added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"City Super Mart\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nGenerate an off-route visit for City Super Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route customer added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"City Super Mart\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please exclude Om Traders from the schedule as they're currently undergoing shop renovations."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease exclude Om Traders from the schedule as they're currently undergoing shop renovations.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Fetch 1200 cash from Mahavir Stores, please."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Mahavir Stores\",\"amount\":1200}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nFetch 1200 cash from Mahavir Stores, please.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash collection prepared.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Mahavir Stores\",\"amount\":1200}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually add a load of Kurkure Green Chutney with a quantity of 25."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Green Chutney\",\"qty\":25}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually add a load of Kurkure Green Chutney with a quantity of 25.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Kurkure Green Chutney\",\"qty\":25}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually enter a stock load for Parle-G 100g, with a quantity of 60 units."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually enter a stock load for Parle-G 100g, with a quantity of 60 units.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Parle-G 100g\",\"qty\":60}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please include off-route delivery for Rathi Stores in the schedule."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease include off-route delivery for Rathi Stores in the schedule.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Rathi Stores as an off-route visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Rathi Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "We'll have to skip Ramesh Kirana since the owner isn't available right now."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Kirana\",\"reason\":\"owner not available\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWe'll have to skip Ramesh Kirana since the owner isn't available right now.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Ramesh Kirana\",\"reason\":\"owner not available\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Would it be acceptable to take payment in advance before confirming that the item has been delivered?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Yes, you can collect cash anytime before final delivery confirmation.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWould it be acceptable to take payment in advance before confirming that the item has been delivered?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Yes, you can collect cash anytime before final delivery confirmation.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please skip Mahesh Kirana as the owner is currently unavailable."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mahesh Kirana\",\"reason\":\"owner not available\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease skip Mahesh Kirana as the owner is currently unavailable.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer skipped.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Mahesh Kirana\",\"reason\":\"owner not available\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Collect full pending cash from Neha Enterprises."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting the full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Neha Enterprises\",\"amount\":\"FULL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCollect full pending cash from Neha Enterprises.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting the full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Neha Enterprises\",\"amount\":\"FULL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please take out any inventory that's damaged from the van."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening unload with damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease take out any inventory that's damaged from the van.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening unload with damaged items.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"UNLOAD_DAMAGED_ALL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Looking to buy 3 bottles of Sprite 1L from Sai Kirana—any van sale available?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sai Kirana\",\"saleItems\":[{\"product\":\"Sprite 1L\",\"qty\":3}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nLooking to buy 3 bottles of Sprite 1L from Sai Kirana—any van sale available?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Navigating to van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Sai Kirana\",\"saleItems\":[{\"product\":\"Sprite 1L\",\"qty\":3}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you check the delivery status for Om Traders, please?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCould you check the delivery status for Om Traders, please?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening delivery summary.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"CONFIRM_DELIVERY\",\"customer\":\"Om Traders\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please skip customer Om Traders as their shop is currently undergoing renovation."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease skip customer Om Traders as their shop is currently undergoing renovation.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Skipping customer visit.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Om Traders\",\"reason\":\"shop under renovation\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Will my vehicle have enough fuel to last the rest of the day?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"I can help check that — want me to review current stock versus remaining deliveries?\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nWill my vehicle have enough fuel to last the rest of the day?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"I can help check that — want me to review current stock versus remaining deliveries?\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please retrieve the complete pending cash amount from Neha Enterprises."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Collecting the full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Neha Enterprises\",\"amount\":\"FULL\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease retrieve the complete pending cash amount from Neha Enterprises.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Collecting the full outstanding amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Neha Enterprises\",\"amount\":\"FULL\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Could you please withdraw 1500 cash from Rahul Agencies for me?"
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nPlease withdraw 1,500 rupees from Rahul Agencies.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nCould you please withdraw 1500 cash from Rahul Agencies for me?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Prefilling cash collection with the entered amount.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Rahul Agencies\",\"amount\":1500}}}<|im_end|>\n"
   },
   {
     "messages": [
       {
         "role": "user",
-        "content": "Exchange one damaged 2-liter Coke bottle for a new one at Lucky Stores."
+        "content": "Collect 850 cash from Anjali Kirana."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCollect 850 cash from Anjali Kirana.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Cash amount entered.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"COLLECT_CASH\",\"customer\":\"Anjali Kirana\",\"amount\":850}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "I'd like to return a 2L bottle of Coke that was damaged, purchased from Lucky Stores."
       },
       {
         "role": "assistant",
         "content": "{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}"
       }
     ],
-    "text": "<|startoftext|><|im_start|>user\nExchange one damaged 2-liter Coke bottle for a new one at Lucky Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}<|im_end|>\n"
+    "text": "<|startoftext|><|im_start|>user\nI'd like to return a 2L bottle of Coke that was damaged, purchased from Lucky Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Processing the return.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"RETURN\",\"customer\":\"Lucky Stores\",\"returnItems\":[{\"product\":\"Coca Cola 2L\",\"qty\":1}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Can you explain why \"off-route\" is chosen over \"normal visit\" in this context?"
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route is used when the customer is not part of today’s planned route.\"}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nCan you explain why \"off-route\" is chosen over \"normal visit\" in this context?<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route is used when the customer is not part of today’s planned route.\"}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please sell 2 bottles of Limca 1L to Vinayak Stores."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease sell 2 bottles of Limca 1L to Vinayak Stores.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening van sales.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"VAN_SALE\",\"customer\":\"Vinayak Stores\",\"saleItems\":[{\"product\":\"Limca 1L\",\"qty\":2}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Schedule an off-route visit for City Super Mart."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Off-route customer added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"City Super Mart\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSchedule an off-route visit for City Super Mart.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Off-route customer added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"City Super Mart\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please include the off-route customer Ganesh Stores in the delivery schedule."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Adding Ganesh Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Ganesh Stores\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease include the off-route customer Ganesh Stores in the delivery schedule.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Adding Ganesh Stores as an off-route customer.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"OFFROUTE_ADD\",\"customer\":\"Ganesh Stores\"}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually add 10 bottles of Sting Energy Drink to the inventory."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually add 10 bottles of Sting Energy Drink to the inventory.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Manual load screen opened.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Sting Energy Drink\",\"qty\":10}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Please manually add a stock entry for Lays Classic 30g with a quantity of 40."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Opening manual load with Lays Classic added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Lays Classic 30g\",\"qty\":40}]}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nPlease manually add a stock entry for Lays Classic 30g with a quantity of 40.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Opening manual load with Lays Classic added.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"MANUAL_LOAD\",\"loadItems\":[{\"product\":\"Lays Classic 30g\",\"qty\":40}]}}}<|im_end|>\n"
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Skip Mark Suresh Stores due to customer unavailability."
+      },
+      {
+        "role": "assistant",
+        "content": "{\"message\":\"Customer skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Suresh Stores\",\"reason\":\"customer not available\"}}}"
+      }
+    ],
+    "text": "<|startoftext|><|im_start|>user\nSkip Mark Suresh Stores due to customer unavailability.<|im_end|>\n<|im_start|>assistant\n{\"message\":\"Customer skipped successfully.\",\"tool_call\":{\"name\":\"execute_workflow\",\"arguments\":{\"action\":\"SKIP_CUSTOMER\",\"customer\":\"Suresh Stores\",\"reason\":\"customer not available\"}}}<|im_end|>\n"
   }
 ]

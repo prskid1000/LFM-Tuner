@@ -14,7 +14,7 @@ if not exist ".venv" (
 )
 
 REM Install core requirements
-echo [0] Installing core requirements...
+echo [5/6] Installing core requirements...
 if exist "requirements.txt" (
     .venv\Scripts\python.exe -m pip install -r requirements.txt
     if not %errorlevel% == 0 (
