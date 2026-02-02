@@ -13,6 +13,7 @@ from typing import Dict, Any, Optional, Tuple
 from unsloth import FastLanguageModel, FastModel
 from trl import SFTTrainer, SFTConfig
 from datasets import Dataset
+from transformers import EarlyStoppingCallback
 from src.utils import (
     validate_attention_backend,
     validate_bitsandbytes,
@@ -413,27 +414,90 @@ def train_model(
     if gpu_info:
         logger.info(f"GPU Memory: {gpu_info['used']:.2f}GB / {gpu_info['total']:.2f}GB used")
     
-    # Setup training arguments
-    training_args = SFTConfig(
-        max_seq_length=training_config.get('max_seq_length', 2048),
-        per_device_train_batch_size=training_config.get('per_device_train_batch_size', 1),
-        gradient_accumulation_steps=training_config.get('gradient_accumulation_steps', 4),
-        warmup_steps=training_config.get('warmup_steps', 10),
-        max_steps=training_config.get('max_steps', 100),
-        logging_steps=training_config.get('logging_steps', 1),
-        output_dir=str(output_dir),
-        optim=training_config.get('optim', 'adamw_8bit'),
-        seed=training_config.get('seed', 3407),
-        fp16=training_config.get('fp16', False),
-        bf16=training_config.get('bf16', False),
-        report_to=training_config.get('report_to', None),
-        dataloader_num_workers=0,
-        dataset_num_proc=1,
-    )
-    
     # Add validation dataset if provided
     eval_dataset = val_dataset if val_dataset else None
-    
+
+    # Validation: only enable when eval_dataset is provided
+    eval_strategy = training_config.get('eval_strategy', 'no')
+    if eval_dataset is None:
+        eval_strategy = 'no'
+        logger.info("No validation dataset provided; validation disabled")
+    elif eval_strategy == 'no':
+        logger.info("Validation dataset provided but eval_strategy is 'no'; validation disabled")
+
+    # Build SFTConfig with optional validation params
+    sft_kwargs: Dict[str, Any] = {
+        'max_seq_length': training_config.get('max_seq_length', 2048),
+        'per_device_train_batch_size': training_config.get('per_device_train_batch_size', 1),
+        'gradient_accumulation_steps': training_config.get('gradient_accumulation_steps', 4),
+        'warmup_steps': training_config.get('warmup_steps', 10),
+        'max_steps': training_config.get('max_steps', 100),
+        'logging_steps': training_config.get('logging_steps', 1),
+        'output_dir': str(output_dir),
+        'optim': training_config.get('optim', 'adamw_8bit'),
+        'seed': training_config.get('seed', 3407),
+        'fp16': training_config.get('fp16', False),
+        'bf16': training_config.get('bf16', False),
+        'report_to': training_config.get('report_to', None),
+        'dataloader_num_workers': 0,
+        'dataset_num_proc': 1,
+    }
+
+    # Validation parameters (when eval_strategy is not 'no')
+    if eval_strategy != 'no':
+        sft_kwargs['eval_strategy'] = eval_strategy
+        sft_kwargs['eval_steps'] = training_config.get('eval_steps', 25)
+        sft_kwargs['eval_delay'] = training_config.get('eval_delay', 0)
+        sft_kwargs['per_device_eval_batch_size'] = training_config.get(
+            'per_device_eval_batch_size', sft_kwargs['per_device_train_batch_size']
+        )
+        if training_config.get('load_best_model_at_end', False):
+            sft_kwargs['load_best_model_at_end'] = True
+            sft_kwargs['metric_for_best_model'] = training_config.get(
+                'metric_for_best_model', 'eval_loss'
+            )
+            sft_kwargs['greater_is_better'] = training_config.get('greater_is_better', False)
+            # save_strategy and save_steps must align with eval for best-model selection
+            sft_kwargs['save_strategy'] = training_config.get('save_strategy', eval_strategy)
+            sft_kwargs['save_steps'] = training_config.get('save_steps', sft_kwargs['eval_steps'])
+            sft_kwargs['save_total_limit'] = training_config.get('save_total_limit', 3)
+        logger.info(
+            f"Validation enabled: eval_strategy={eval_strategy}, "
+            f"eval_steps={sft_kwargs.get('eval_steps')}"
+        )
+
+    training_args = SFTConfig(**sft_kwargs)
+
+    # Early stopping: stop when metric doesn't improve for N evals (requires load_best_model_at_end)
+    callbacks: list = []
+    early_stopping_patience = training_config.get('early_stopping_patience', 0)
+    if eval_strategy != 'no' and early_stopping_patience > 0:
+        if not sft_kwargs.get('load_best_model_at_end', False):
+            logger.warning(
+                "early_stopping_patience set but load_best_model_at_end is False; "
+                "enabling load_best_model_at_end for early stopping"
+            )
+            sft_kwargs['load_best_model_at_end'] = True
+            sft_kwargs['metric_for_best_model'] = training_config.get(
+                'metric_for_best_model', 'eval_loss'
+            )
+            sft_kwargs['greater_is_better'] = training_config.get('greater_is_better', False)
+            sft_kwargs['save_strategy'] = training_config.get('save_strategy', eval_strategy)
+            sft_kwargs['save_steps'] = training_config.get('save_steps', sft_kwargs['eval_steps'])
+            sft_kwargs['save_total_limit'] = training_config.get('save_total_limit', 3)
+            training_args = SFTConfig(**sft_kwargs)
+        early_stopping_threshold = training_config.get('early_stopping_threshold', 0.0)
+        callbacks.append(
+            EarlyStoppingCallback(
+                early_stopping_patience=early_stopping_patience,
+                early_stopping_threshold=early_stopping_threshold,
+            )
+        )
+        logger.info(
+            f"Early stopping enabled: patience={early_stopping_patience}, "
+            f"threshold={early_stopping_threshold}"
+        )
+
     logger.info("Starting training...")
     logger.info(f"Training steps: {training_args.max_steps}")
     logger.info(f"Output directory: {output_dir}")
@@ -448,6 +512,7 @@ def train_model(
         eval_dataset=eval_dataset,
         tokenizer=tokenizer,
         args=training_args,
+        callbacks=callbacks if callbacks else None,
     )
     
     # Apply training optimization based on config
