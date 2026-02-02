@@ -54,16 +54,35 @@ training:
   per_device_train_batch_size: 2  # LFM 2.5 is small, can use batch size 2
   gradient_accumulation_steps: 4   # Effective batch size = 8
   warmup_steps: 10
-  max_steps: 5000          # Adjust based on your needs
+  max_steps: 200          # Adjust based on your needs
   logging_steps: 1
   optim: "adamw_8bit"     # Memory efficient optimizer
   seed: 3407
   fp16: false             # Use bf16 if supported
-  bf16: false             # Better than fp16 if GPU supports
+  bf16: true             # Better than fp16 if GPU supports
   report_to: null         # Set to "wandb" or "tensorboard" if desired
   # Training optimization mode
   # Options: 'standard', 'responses_only', 'completions_only'
-  optimization_mode: 'responses_only'
+  optimization_mode: 'standard'
+
+  # Validation during training (runs only when val_dataset is provided)
+  # eval_strategy: 'no' | 'steps' | 'epoch' — when to run validation
+  eval_strategy: 'steps'
+  eval_steps: 25              # Evaluate every N steps (when eval_strategy is 'steps')
+  eval_delay: 0               # Steps/epochs to wait before first evaluation
+  per_device_eval_batch_size: 2  # Can often be higher than train batch (no gradients)
+  # Load best checkpoint at end (by validation metric)
+  load_best_model_at_end: true
+  metric_for_best_model: 'eval_loss'  # Lower is better for loss
+  greater_is_better: false    # Loss: lower = better
+  save_strategy: 'steps'      # Must align with eval_strategy when using load_best_model_at_end
+  save_steps: 25              # Save every N steps (should match eval_steps for best-model selection)
+  save_total_limit: 3         # Keep only last N checkpoints (best always retained)
+
+  # Early stopping: stop training when validation stops improving
+  # Requires validation dataset + eval_strategy != 'no'. Saves compute if model plateaus early.
+  early_stopping_patience: 3   # Stop after N evals with no improvement (0 = disabled)
+  early_stopping_threshold: 0.0  # Min improvement to count as "better" (e.g. 0.01 = 1% for loss)
 
 # Dataset Configuration
 dataset:
@@ -96,8 +115,8 @@ evaluation:
 # LoRA / merged use Unsloth when available. GGUF uses llama.cpp directly
 # (not Unsloth) for Windows compatibility — Unsloth GGUF often fails on Windows.
 export:
-  export_lora: true        # Save LoRA adapter (recommended)
-  export_merged: true      # Merge and save 16-bit model
+  export_lora: false        # Save LoRA adapter (recommended)
+  export_merged: false      # Merge and save 16-bit model
   export_gguf: true        # GGUF via llama.cpp (Windows-friendly)
   gguf_quantization_methods:
     - "q4_k_m"             # 4-bit (recommended)
@@ -107,9 +126,9 @@ export:
   # Push to Hugging Face Hub (optional)
   push_to_hub: false
   hub_repo_id: "your-username/your-model-name"
-  push_lora: true
-  push_merged: true
-  push_gguf: true
+  push_lora: false
+  push_merged: false
+  push_gguf: false
 
 # Output Configuration
 output:
