@@ -4,6 +4,9 @@ Handles loading initial datasets and generating synthetic data using LM Studio
 
 All input/output data must be in messages format:
 [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
+
+When tool_schema is provided, a system message with AVAILABLE TOOLS is prepended
+to match production inference (e.g. LlamaService.buildSystemMessage).
 """
 
 import hashlib
@@ -18,6 +21,90 @@ import time
 
 
 logger = logging.getLogger(__name__)
+
+# Default tool schema for execute_workflow (matches LlamaService / React Native app)
+DEFAULT_TOOL_SCHEMA = {
+    "type": "function",
+    "function": {
+        "name": "search",
+        "description": "Search for information",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search query"
+                }
+            },
+            "required": ["query"]
+        }
+    }
+}
+
+def _format_tools_for_system_message(tools: List[Dict[str, Any]]) -> str:
+    """
+    Format tool schema for injection into system message.
+    Matches LlamaService.buildSystemMessage format.
+    Accepts OpenAI-style {type, function: {name, description, parameters}} or
+    simplified {name, description, parameters}.
+    """
+    simplified = []
+    for t in tools:
+        fn = t.get("function") if isinstance(t.get("function"), dict) else t
+        simplified.append({
+            "name": fn.get("name", ""),
+            "description": fn.get("description", ""),
+            "parameters": fn.get("parameters", {}),
+        })
+    return json.dumps(simplified, indent=2, ensure_ascii=False)
+
+
+def inject_tool_schema_into_dataset(
+    data: List[Dict[str, Any]],
+    tool_schema: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """
+    Inject tool schema as system message into each example in a dataset.
+    Use when loading pre-augmented data that was created without tools.
+    Matches production LlamaService.buildSystemMessage format.
+    """
+    return [_inject_tool_schema_into_example(ex, tool_schema) for ex in data]
+
+
+def _inject_tool_schema_into_example(
+    example: Dict[str, Any],
+    tool_schema: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """
+    Inject tool schema as system message into an example.
+    Prepends system message with AVAILABLE TOOLS (matches production LlamaService).
+    """
+    messages = list(example.get("messages", example.get("conversations", [])))
+    if not messages:
+        return example
+
+    system_content = """You are a helpful AI assistant that can answer questions and perform tasks using tools. Respond concisely and accurately. Follow all instructions carefully.
+
+OUTPUT FORMAT (strict JSON):
+- Always respond as JSON object.
+- If tool needed: include "tool_call" with exact tool name and JSON arguments.
+- If no tool needed: tool_call.name = "none" and tool_call.arguments = {}.
+
+AVAILABLE TOOLS:
+"""
+    system_content += _format_tools_for_system_message(tool_schema)
+
+    # Check if first message is already a system message (avoid duplicate)
+    if messages[0].get("role") == "system":
+        # Prepend tools to existing system content
+        messages[0] = {
+            "role": "system",
+            "content": system_content + "\n\n" + messages[0].get("content", ""),
+        }
+    else:
+        messages.insert(0, {"role": "system", "content": system_content})
+
+    return {**example, "messages": messages}
 
 
 def _get_example_text(example: Dict[str, Any]) -> str:
@@ -309,6 +396,7 @@ def augment_dataset(
     max_attempts_per_example: Optional[int] = None,
     save_path: Optional[Path] = None,
     save_format: str = "json",
+    tool_schema: Optional[List[Dict[str, Any]]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Augment dataset using LM Studio with built-in quality filtering.
@@ -319,6 +407,9 @@ def augment_dataset(
     or max_attempts_per_example is reached.
 
     Input and output data must be in messages format.
+
+    When tool_schema is provided, a system message with AVAILABLE TOOLS is prepended
+    to each example, matching production inference (e.g. LlamaService.buildSystemMessage).
 
     Args:
         initial_data: Initial dataset examples in messages format (each must have 'messages' key)
@@ -338,6 +429,9 @@ def augment_dataset(
             (default 3 * num_augmentations_per_example)
         save_path: Optional path to save augmented data (default: data/generated/augmented_dataset.json)
         save_format: Format to save ('json' or 'jsonl')
+        tool_schema: Optional list of tools (OpenAI format) to inject as system message.
+            Use DEFAULT_TOOL_SCHEMA or pass your full tool schema. When provided, each
+            example gets a system message with AVAILABLE TOOLS matching production.
 
     Returns:
         Augmented and filtered dataset in messages format (no separate filter step needed).
@@ -353,13 +447,18 @@ def augment_dataset(
         f"Target: {num_augmentations_per_example} unique valid samples per example "
         f"(filter: length [{min_length}, {max_length}], remove_duplicates={remove_duplicates})"
     )
+    if tool_schema:
+        logger.info(f"Injecting tool schema ({len(tool_schema)} tools) into each example")
 
     response_format = {"type": "json_object"} if use_structured_output else None
+
+    def _maybe_inject(ex: Dict[str, Any]) -> Dict[str, Any]:
+        return _inject_tool_schema_into_example(ex, tool_schema) if tool_schema else ex
 
     for i, example in enumerate(initial_data):
         # Include original only if it passes the same filter
         if _passes_filter(example, min_length, max_length, remove_duplicates, seen):
-            augmented_data.append(example)
+            augmented_data.append(_maybe_inject(example))
 
         collected = 0
         attempts = 0
@@ -418,6 +517,7 @@ def augment_dataset(
                             break
 
                 aug_example["messages"] = messages
+                aug_example = _maybe_inject(aug_example)
 
                 if _passes_filter(
                     aug_example, min_length, max_length, remove_duplicates, seen
