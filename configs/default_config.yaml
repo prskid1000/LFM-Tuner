@@ -63,7 +63,7 @@ training:
   report_to: null         # Set to "wandb" or "tensorboard" if desired
   # Training optimization mode
   # Options: 'standard', 'responses_only', 'completions_only'
-  optimization_mode: 'standard'
+  optimization_mode: 'responses_only'
 
   # Validation during training (runs only when val_dataset is provided)
   # eval_strategy: 'no' | 'steps' | 'epoch' — when to run validation
@@ -105,8 +105,7 @@ evaluation:
   # GGUF model settings (llama-cpp-python)
   gguf_n_ctx: 2048          # Context window size for GGUF (lower = more stable)
   gguf_n_batch: 512         # Batch size for prompt processing
-  gguf_max_prompt_length: 1000  # Max prompt chars (~250 tokens)
-  
+
   # General evaluation settings
   num_samples: 10           # Number of samples to evaluate
   max_new_tokens: 200       # Max tokens to generate per sample
