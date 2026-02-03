@@ -218,15 +218,6 @@ def generate_text(
         if prompt.startswith("<|startoftext|>"):
             prompt = prompt[len("<|startoftext|>"):].lstrip()
 
-        # Get max prompt length from config
-        eval_config = config.get('evaluation', {}) if config else {}
-        max_prompt_length = eval_config.get('gguf_max_prompt_length', 1000)
-
-        # Truncate prompt if too long for GGUF
-        if len(prompt) > max_prompt_length:
-            logger.debug(f"Truncating prompt from {len(prompt)} to {max_prompt_length} chars")
-            prompt = prompt[:max_prompt_length]
-        
         # Reset context before generation to avoid overflow
         try:
             model.reset()
