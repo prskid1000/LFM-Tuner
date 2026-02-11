@@ -22,7 +22,7 @@ import time
 
 logger = logging.getLogger(__name__)
 
-# Default tool schema for execute_workflow (matches LlamaService / React Native app)
+
 DEFAULT_TOOL_SCHEMA = {
     "type": "function",
     "function": {
@@ -40,6 +40,7 @@ DEFAULT_TOOL_SCHEMA = {
         }
     }
 }
+
 
 def _format_tools_for_system_message(tools: List[Dict[str, Any]]) -> str:
     """
@@ -442,6 +443,24 @@ def augment_dataset(
     augmented_data = []
     seen: set = set()
 
+    response_format = {"type": "json_object"} if use_structured_output else None
+
+    def _maybe_inject(ex: Dict[str, Any]) -> Dict[str, Any]:
+        return _inject_tool_schema_into_example(ex, tool_schema) if tool_schema else ex
+
+    # Precheck entire initial data with tool schema appended — display this first (before any LM Studio calls)
+    _precheck_seen: set = set()
+    precheck_pass = 0
+    for ex in initial_data:
+        c = _maybe_inject(ex)
+        if _passes_filter(c, min_length, max_length, remove_duplicates, _precheck_seen):
+            precheck_pass += 1
+    precheck_msg = (
+        f"Precheck (initial data + tool_schema): {precheck_pass}/{len(initial_data)} examples pass filter"
+    )
+    print(precheck_msg)  # visible in notebook before any API calls
+    logger.info(precheck_msg)
+
     logger.info(f"Augmenting dataset with '{augmentation_strategy}' strategy")
     logger.info(
         f"Target: {num_augmentations_per_example} unique valid samples per example "
@@ -450,15 +469,11 @@ def augment_dataset(
     if tool_schema:
         logger.info(f"Injecting tool schema ({len(tool_schema)} tools) into each example")
 
-    response_format = {"type": "json_object"} if use_structured_output else None
-
-    def _maybe_inject(ex: Dict[str, Any]) -> Dict[str, Any]:
-        return _inject_tool_schema_into_example(ex, tool_schema) if tool_schema else ex
-
     for i, example in enumerate(initial_data):
-        # Include original only if it passes the same filter
-        if _passes_filter(example, min_length, max_length, remove_duplicates, seen):
-            augmented_data.append(_maybe_inject(example))
+        # Include original only if it passes filter on the stored form (with tool_schema)
+        candidate = _maybe_inject(example)
+        if _passes_filter(candidate, min_length, max_length, remove_duplicates, seen):
+            augmented_data.append(candidate)
 
         collected = 0
         attempts = 0
