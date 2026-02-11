@@ -15,13 +15,15 @@ import logging
 from random import random
 import requests
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from transformers import PreTrainedTokenizerBase
 from datasets import Dataset, DatasetDict
 import time
 
 
 logger = logging.getLogger(__name__)
-
 
 DEFAULT_TOOL_SCHEMA = {
     "type": "function",
@@ -40,6 +42,7 @@ DEFAULT_TOOL_SCHEMA = {
         }
     }
 }
+
 
 
 def _format_tools_for_system_message(tools: List[Dict[str, Any]]) -> str:
@@ -108,16 +111,30 @@ AVAILABLE TOOLS:
     return {**example, "messages": messages}
 
 
-def _get_example_text(example: Dict[str, Any]) -> str:
+def _get_example_text(example: Dict[str, Any], skip_first_message: bool = False) -> str:
     """Extract concatenated text from an example for length/filter checks."""
     messages = example.get("messages", example.get("conversations", []))
     if messages and isinstance(messages, list):
+        if skip_first_message and len(messages) > 1:
+            messages = messages[1:]
         return " ".join(
             msg.get("content", "") for msg in messages if isinstance(msg, dict)
         )
     if "text" in example:
         return str(example.get("text", ""))
     return ""
+
+
+def _get_example_length(
+    example: Dict[str, Any],
+    skip_first_message: bool,
+    tokenizer: "PreTrainedTokenizerBase",
+) -> int:
+    """Return length in tokens. Tokenizer is required (we always use token count, not char length)."""
+    if tokenizer is None:
+        raise ValueError("tokenizer is required for length calculation (use token count, not chars)")
+    text = _get_example_text(example, skip_first_message=skip_first_message)
+    return len(tokenizer.encode(text, add_special_tokens=False))
 
 
 def _content_hash(text: str) -> str:
@@ -371,12 +388,20 @@ def _passes_filter(
     max_length: int,
     remove_duplicates: bool,
     seen: set,
+    skip_first_message: bool = False,
+    tokenizer: Optional["PreTrainedTokenizerBase"] = None,
 ) -> bool:
-    """Return True if example passes length and (optionally) duplicate check."""
-    text = _get_example_text(example)
-    if len(text) < min_length or len(text) > max_length:
+    """Return True if example passes length (tokens) and (optionally) duplicate check.
+    tokenizer is required; min_length/max_length are token limits.
+    When skip_first_message is True, length is computed on conversation only (exclude first message).
+    """
+    if tokenizer is None:
+        raise ValueError("tokenizer is required for filtering (length is in tokens)")
+    length = _get_example_length(example, skip_first_message, tokenizer)
+    if length < min_length or length > max_length:
         return False
     if remove_duplicates:
+        text = _get_example_text(example, skip_first_message=skip_first_message)
         h = _content_hash(text)
         if h in seen:
             return False
@@ -392,12 +417,13 @@ def augment_dataset(
     delay: float = 0.5,
     use_structured_output: bool = False,
     min_length: int = 10,
-    max_length: int = 2000,
+    max_length: int = 1000,
     remove_duplicates: bool = True,
     max_attempts_per_example: Optional[int] = None,
     save_path: Optional[Path] = None,
     save_format: str = "json",
     tool_schema: Optional[List[Dict[str, Any]]] = None,
+    tokenizer: Optional["PreTrainedTokenizerBase"] = None,
 ) -> List[Dict[str, Any]]:
     """
     Augment dataset using LM Studio with built-in quality filtering.
@@ -423,8 +449,8 @@ def augment_dataset(
         num_augmentations_per_example: Number of unique valid augmentations to keep per example
         delay: Delay between API calls (seconds)
         use_structured_output: Use JSON structured output format
-        min_length: Minimum total text length; samples below are dropped (default 10)
-        max_length: Maximum total text length; samples above are dropped (default 2000)
+        min_length: Minimum length in tokens; samples below are dropped (default 10)
+        max_length: Maximum length in tokens; samples above are dropped (default 1000)
         remove_duplicates: If True, only keep one copy of each content (default True)
         max_attempts_per_example: Max API calls per example when chasing num_augmentations_per_example
             (default 3 * num_augmentations_per_example)
@@ -433,10 +459,13 @@ def augment_dataset(
         tool_schema: Optional list of tools (OpenAI format) to inject as system message.
             Use DEFAULT_TOOL_SCHEMA or pass your full tool schema. When provided, each
             example gets a system message with AVAILABLE TOOLS matching production.
+        tokenizer: Required. Tokenizer (e.g. from load_tokenizer_only) for token-count length filtering.
 
     Returns:
         Augmented and filtered dataset in messages format (no separate filter step needed).
     """
+    if tokenizer is None:
+        raise ValueError("tokenizer is required for augment_dataset (length filtering uses token count)")
     if max_attempts_per_example is None:
         max_attempts_per_example = max(num_augmentations_per_example * 3, 10)
 
@@ -448,15 +477,16 @@ def augment_dataset(
     def _maybe_inject(ex: Dict[str, Any]) -> Dict[str, Any]:
         return _inject_tool_schema_into_example(ex, tool_schema) if tool_schema else ex
 
+    skip_first = bool(tool_schema)
     # Precheck entire initial data with tool schema appended — display this first (before any LM Studio calls)
     _precheck_seen: set = set()
     precheck_pass = 0
     for ex in initial_data:
         c = _maybe_inject(ex)
-        if _passes_filter(c, min_length, max_length, remove_duplicates, _precheck_seen):
+        if _passes_filter(c, min_length, max_length, remove_duplicates, _precheck_seen, skip_first_message=skip_first, tokenizer=tokenizer):
             precheck_pass += 1
     precheck_msg = (
-        f"Precheck (initial data + tool_schema): {precheck_pass}/{len(initial_data)} examples pass filter"
+        f"Precheck (initial data + tool_schema): {precheck_pass}/{len(initial_data)} examples pass filter (tokens)"
     )
     print(precheck_msg)  # visible in notebook before any API calls
     logger.info(precheck_msg)
@@ -464,7 +494,7 @@ def augment_dataset(
     logger.info(f"Augmenting dataset with '{augmentation_strategy}' strategy")
     logger.info(
         f"Target: {num_augmentations_per_example} unique valid samples per example "
-        f"(filter: length [{min_length}, {max_length}], remove_duplicates={remove_duplicates})"
+        f"(filter: tokens [{min_length}, {max_length}], remove_duplicates={remove_duplicates})"
     )
     if tool_schema:
         logger.info(f"Injecting tool schema ({len(tool_schema)} tools) into each example")
@@ -472,7 +502,7 @@ def augment_dataset(
     for i, example in enumerate(initial_data):
         # Include original only if it passes filter on the stored form (with tool_schema)
         candidate = _maybe_inject(example)
-        if _passes_filter(candidate, min_length, max_length, remove_duplicates, seen):
+        if _passes_filter(candidate, min_length, max_length, remove_duplicates, seen, skip_first_message=skip_first, tokenizer=tokenizer):
             augmented_data.append(candidate)
 
         collected = 0
@@ -535,7 +565,8 @@ def augment_dataset(
                 aug_example = _maybe_inject(aug_example)
 
                 if _passes_filter(
-                    aug_example, min_length, max_length, remove_duplicates, seen
+                    aug_example, min_length, max_length, remove_duplicates, seen,
+                    skip_first_message=skip_first, tokenizer=tokenizer,
                 ):
                     augmented_data.append(aug_example)
                     collected += 1
@@ -574,37 +605,44 @@ def filter_quality(
     max_length: int = 2000,
     remove_duplicates: bool = True,
     save_path: Optional[Path] = None,
-    save_format: str = "json"
+    save_format: str = "json",
+    tokenizer: Optional["PreTrainedTokenizerBase"] = None,
+    skip_first_message: bool = False,
 ) -> List[Dict[str, Any]]:
     """
-    Filter dataset for quality
-    
+    Filter dataset for quality. Length filtering always uses token count (tokenizer required).
+
     Args:
         data: Dataset examples
-        min_length: Minimum text length
-        max_length: Maximum text length
+        min_length: Minimum length in tokens
+        max_length: Maximum length in tokens
         remove_duplicates: Remove duplicate examples
         save_path: Optional path to save filtered data (default: data/generated/filtered_dataset.json)
         save_format: Format to save ('json' or 'jsonl')
-    
+        tokenizer: Required. Tokenizer for token-count length filtering.
+        skip_first_message: When True, length is computed on conversation only (exclude first message)
+
     Returns:
         Filtered dataset
     """
+    if tokenizer is None:
+        raise ValueError("tokenizer is required for filter_quality (length filtering uses token count)")
     filtered = []
     seen = set()
-    
+
     for example in data:
-        text = _get_example_text(example)
-        if len(text) < min_length or len(text) > max_length:
+        length = _get_example_length(example, skip_first_message, tokenizer)
+        if length < min_length or length > max_length:
             continue
         if remove_duplicates:
+            text = _get_example_text(example, skip_first_message=skip_first_message)
             h = _content_hash(text)
             if h in seen:
                 continue
             seen.add(h)
         filtered.append(example)
-    
-    logger.info(f"Quality filtering: {len(data)} -> {len(filtered)} examples")
+
+    logger.info(f"Quality filtering (tokens): {len(data)} -> {len(filtered)} examples")
     
     # Auto-save if save_path is provided or use default
     if save_path is None:
