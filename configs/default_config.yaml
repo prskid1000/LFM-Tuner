@@ -1,42 +1,61 @@
 # Default Configuration for LLM Fine-tuning Pipeline
 # Optimized for Windows + 12GB VRAM GPU
 
+# =============================================================================
 # Model Configuration
+# =============================================================================
 model:
-  name: "LiquidAI/LFM2.5-1.2B-Instruct"  # LFM 2.5 Thinking model
+  # HuggingFace model ID. Base = no chat template; Instruct = instruction-tuned.
+  # Effect: Instruct starts closer to your task; Base can give more flexibility.
+  name: "LiquidAI/LFM2.5-1.2B-Instruct"
   # Alternative LFM models:
   # - "LiquidAI/LFM2.5-1.2B-Base"
   # - "LiquidAI/LFM2.5-1.2B-Instruct"
+  # Allow custom model code from Hub. Keep false unless the model repo requires it.
   trust_remote_code: false
-  hf_token: null  # Set your HuggingFace token if using gated models
+  # HuggingFace token for gated/private models. Leave null for public models.
+  hf_token: null
 
-# Attention Backend Configuration
-# Choose ONE: 'flash_attention' or 'sageattention'
-# No fallback - must match installed packages
-# 
-# RECOMMENDATION for Windows + 12GB VRAM:
-# - Start with "sageattention" (universal support, easy install)
-# - Use "flash_attention" if you need maximum speed with Llama/Qwen/Mistral
-#
-attention_backend: "sageattention"  # Recommended: universal support
-# attention_backend: "flash_attention"  # Alternative: faster for Llama/Qwen/Mistral
+# =============================================================================
+# Attention Backend
+# =============================================================================
+# Which attention implementation to use. Must match installed packages (no auto-fallback).
+# Effect on speed/accuracy: Both are numerically close; flash_attention is often faster
+# on supported GPUs. Wrong backend = import/runtime errors.
+# RECOMMENDATION (Windows + 12GB): sageattention = universal; flash_attention = max speed for Llama/Qwen/Mistral.
+attention_backend: "sageattention"
+# attention_backend: "flash_attention"
 
-# Quantization Configuration
-# With Flash/SAGE Attention, 16-bit is often sufficient for smaller models
-# 4-bit/8-bit only needed for larger models or if model doesn't fit
+# =============================================================================
+# Quantization (load precision)
+# =============================================================================
+# Lower bits = less VRAM, slower training, slight accuracy drop. 16-bit = best quality, most VRAM.
+# Effect: 4bit/8bit need bitsandbytes; 16bit needs no extra deps. For 1.2B on 12GB, 16bit is fine.
 quantization:
-  load_in_4bit: false   # Requires bitsandbytes
-  load_in_8bit: false   # Requires bitsandbytes
-  load_in_16bit: true   # Default, no bitsandbytes needed
+  load_in_4bit: false   # Smallest VRAM, most accuracy loss; use when model doesn't fit.
+  load_in_8bit: false   # Middle ground; use for 7B+ on 12GB.
+  load_in_16bit: true   # Full precision; best accuracy, no bitsandbytes.
 
-# LoRA Configuration (optimized for 12GB VRAM)
-# For LFM 2.5 (small model), we can use higher rank for better performance
+# =============================================================================
+# LoRA (Low-Rank Adaptation)
+# =============================================================================
+# LoRA trains small adapter matrices instead of full weights. Fewer params = less VRAM, faster; rank/alpha control capacity.
 lora:
-  r: 32                    # LoRA rank (higher for smaller models like LFM 2.5)
-  lora_alpha: 32          # LoRA alpha (typically 2x rank)
-  lora_dropout: 0         # LoRA dropout (0 is optimized)
-  bias: "none"            # Bias setting (none is optimized)
-  target_modules:         # Modules to apply LoRA to (LFM uses standard architecture)
+  # r: Rank of LoRA matrices. Higher = more capacity, better fit, more VRAM and overfitting risk.
+  # Effect: 8–16 for large models; 32–64 OK for small models like LFM 2.5. Too high → overfit; too low → underfit.
+  r: 32
+  # lora_alpha: Scaling factor for LoRA updates. Effective scale = lora_alpha/r. Often set to 2*r.
+  # Effect: alpha=r → scale 1; alpha=2*r → stronger adapter influence. Too high → unstable; too low → weak learning.
+  lora_alpha: 32
+  # lora_dropout: Dropout applied to LoRA activations. 0 is standard and usually best for most tasks.
+  # Effect: >0 can reduce overfitting on tiny datasets but often hurts accuracy; keep 0 unless you see clear overfit.
+  lora_dropout: 0
+  # bias: Whether to train bias in adapted layers. "none" = no extra bias params (recommended).
+  # Effect: "none" keeps params low and is standard; "all" or "lora_only" rarely needed and can overfit.
+  bias: "none"
+  # target_modules: Which linear layers get LoRA. Standard set = attention (q,k,v,o) + MLP (gate, up, down).
+  # Effect: More modules = more capacity and VRAM. Full set above is typical; fewer = faster/less VRAM, less capacity.
+  target_modules:
     - "q_proj"
     - "k_proj"
     - "v_proj"
@@ -44,96 +63,158 @@ lora:
     - "gate_proj"
     - "up_proj"
     - "down_proj"
-  use_gradient_checkpointing: "unsloth"  # Memory efficient
-  use_rslora: false       # Rank stabilized LoRA
+  # use_gradient_checkpointing: Trade compute for VRAM by recomputing activations in backward pass.
+  # Effect: "unsloth" = Unsloth's optimized path (faster, less VRAM). Enables longer seq/batch on 12GB.
+  use_gradient_checkpointing: "unsloth"
+  # use_rslora: Rank-Stabilized LoRA; rescales LoRA output by 1/sqrt(r). Can help with higher ranks.
+  # Effect: true can stabilize training at high r; false is fine for r=32 and keeps behavior standard.
+  use_rslora: false
 
+# =============================================================================
 # Training Configuration (12GB VRAM optimized)
-# For LFM 2.5 (1.2B model), we can use longer sequences and larger batches
+# =============================================================================
 training:
-  max_seq_length: 4096     # LFM supports long context (32k), but 4k is good for training
-  per_device_train_batch_size: 2  # LFM 2.5 is small, can use batch size 2
-  gradient_accumulation_steps: 4   # Effective batch size = 8
+  # max_seq_length: Max tokens per example (prompt + response). Longer = more context, more VRAM.
+  # Effect: 4096 fits 12GB with LoRA; 2048 saves VRAM; 8196+ needs more GPU. Match to your longest samples.
+  max_seq_length: 4096
+  # per_device_train_batch_size: Examples per GPU per step. Larger = more stable gradients, more VRAM.
+  # Effect: 2 is safe for 12GB; 1 if OOM. With gradient_accumulation_steps, effective batch = this × accumulation.
+  per_device_train_batch_size: 2
+  # gradient_accumulation_steps: Simulate larger batch by accumulating gradients over N steps before update.
+  # Effect: Effective batch = per_device_train_batch_size × this (e.g. 2×4=8). Larger effective batch = smoother training, no extra VRAM.
+  gradient_accumulation_steps: 4
+  # warmup_steps: Steps over which LR ramps from 0 to peak. Reduces early instability.
+  # Effect: 10–50 typical. Too low = unstable start; too high = slow to reach learning rate.
   warmup_steps: 10
-  max_steps: 200          # Adjust based on your needs
+  # max_steps: Total training steps. One step = one optimizer update (after accumulation).
+  # Effect: More steps = more learning, risk of overfit. Tune with eval_loss; use early_stopping to auto-stop.
+  max_steps: 1000
+  # logging_steps: Print loss every N steps. Does not affect accuracy.
   logging_steps: 1
-  optim: "adamw_8bit"     # Memory efficient optimizer
+  # optim: Optimizer. adamw_8bit = 8-bit Adam (saves VRAM); adamw_torch = full precision.
+  # Effect: 8bit slightly less precise but rarely hurts final accuracy; use for 12GB. adamw_torch if you have VRAM to spare.
+  optim: "adamw_8bit"
+  # seed: Random seed for reproducibility. Same seed + same data/config = same results.
   seed: 3407
-  fp16: false             # Use bf16 if supported
-  bf16: true             # Better than fp16 if GPU supports
-  report_to: null         # Set to "wandb" or "tensorboard" if desired
-  # Training optimization mode
-  # Options: 'standard', 'responses_only', 'completions_only'
+  # fp16 / bf16: Mixed precision. bf16 preferred on Ampere+ (better range, fewer NaN); fp16 on older GPUs.
+  # Effect: Both save VRAM and speed up; bf16 usually more stable. Disable both only if you see NaNs.
+  fp16: false
+  bf16: true
+  # report_to: "wandb" or "tensorboard" for logging. null = no external logging.
+  report_to: null
+  # optimization_mode: What to train. 'standard' = full seq; 'responses_only' = only response tokens (recommended for chat); 'completions_only' = same idea, different naming.
+  # Effect: responses_only/completions_only = better accuracy per step on assistant text, less compute on system/user tokens.
   optimization_mode: 'responses_only'
 
-  # Validation during training (runs only when val_dataset is provided)
-  # eval_strategy: 'no' | 'steps' | 'epoch' — when to run validation
+  # --- Validation (only used when val_dataset is provided) ---
+  # eval_strategy: When to run validation: 'no', 'steps', or 'epoch'.
   eval_strategy: 'steps'
-  eval_steps: 25              # Evaluate every N steps (when eval_strategy is 'steps')
-  eval_delay: 0               # Steps/epochs to wait before first evaluation
-  per_device_eval_batch_size: 2  # Can often be higher than train batch (no gradients)
-  # Load best checkpoint at end (by validation metric)
+  # eval_steps: Run validation every N steps. Lower = more frequent checks, more eval time.
+  # Effect: Match save_steps so you save and evaluate together; enables load_best_model_at_end.
+  eval_steps: 25
+  # eval_delay: Wait N steps (or epochs) before first evaluation. 0 = evaluate from step 1.
+  eval_delay: 0
+  # per_device_eval_batch_size: Batch size for validation. No gradients, so can often be larger than train.
+  # Effect: Larger = faster eval; reduce if eval OOMs.
+  per_device_eval_batch_size: 2
+  # load_best_model_at_end: After training, reload the checkpoint with best metric_for_best_model.
+  # Effect: Final model = best validation performer, not last step. Reduces overfit; requires save_strategy aligned with eval.
   load_best_model_at_end: true
-  metric_for_best_model: 'eval_loss'  # Lower is better for loss
-  greater_is_better: false    # Loss: lower = better
-  save_strategy: 'steps'      # Must align with eval_strategy when using load_best_model_at_end
-  save_steps: 25              # Save every N steps (should match eval_steps for best-model selection)
-  save_total_limit: 3         # Keep only last N checkpoints (best always retained)
+  # metric_for_best_model: Which metric to use for "best" (e.g. eval_loss, eval_accuracy).
+  metric_for_best_model: 'eval_loss'
+  # greater_is_better: false for loss (lower is better); true for accuracy/F1 (higher is better).
+  greater_is_better: false
+  # save_strategy: When to save: 'steps' or 'epoch'. Should match eval_strategy when using load_best_model_at_end.
+  save_strategy: 'steps'
+  # save_steps: Save a checkpoint every N steps. Match eval_steps so each saved checkpoint has an eval.
+  save_steps: 25
+  # save_total_limit: Max checkpoints to keep (old ones deleted). Best checkpoint is not counted toward limit.
+  # Effect: 3 = keep last 3 + best. Lower = less disk; higher = more recovery options.
+  save_total_limit: 3
+  # early_stopping_patience: Stop if metric doesn't improve for N evaluations. 0 = disabled.
+  # Effect: Stops early when validation plateaus, saves time and can improve generalization by avoiding overfit.
+  early_stopping_patience: 3
+  # early_stopping_threshold: Min change to count as improvement (e.g. 0.01 for 1% better loss).
+  # Effect: 0.0 = any improvement counts; small positive value avoids stopping on noise.
+  early_stopping_threshold: 0.0
 
-  # Early stopping: stop training when validation stops improving
-  # Requires validation dataset + eval_strategy != 'no'. Saves compute if model plateaus early.
-  early_stopping_patience: 3   # Stop after N evals with no improvement (0 = disabled)
-  early_stopping_threshold: 0.0  # Min improvement to count as "better" (e.g. 0.01 = 1% for loss)
-
-# Dataset Configuration
+# =============================================================================
+# Dataset Paths & Splits
+# =============================================================================
 dataset:
+  # raw_path: Folder for initial/unprocessed JSON datasets. No effect on accuracy.
   raw_path: "data/raw"
+  # processed_path: Folder for converted + train/val split files (e.g. train.json, val.json).
   processed_path: "data/processed"
+  # generated_path: Folder for augmented/generated datasets. No effect on accuracy.
   generated_path: "data/generated"
+  # train_ratio: Fraction of data used for training (rest = validation). 0.9 = 90% train, 10% val.
+  # Effect: More train = more learning signal, less validation signal. 0.85–0.95 typical; need enough val for reliable eval.
   train_ratio: 0.9
+  # val_ratio: Fraction for validation. Must satisfy train_ratio + val_ratio = 1.0.
   val_ratio: 0.1
 
-# LM Studio Configuration (for dataset generation)
+# =============================================================================
+# LM Studio (dataset generation / synthetic data)
+# =============================================================================
+# Used when generating or augmenting data via a local LM Studio server. Does not affect training accuracy directly.
 lm_studio:
-  api_url: "http://localhost:1234"
-  max_tokens: 512
-  temperature: 0.7
-  timeout: 60
+  api_url: "http://localhost:1234"  # LM Studio server URL.
+  max_tokens: 512   # Max tokens per generated response. Longer = more content, slower generation.
+  temperature: 0.7  # Sampling randomness. Higher = more diverse; lower = more deterministic.
+  timeout: 60       # Request timeout in seconds.
 
-# Evaluation Configuration
-# Settings for testing and evaluating saved models
+# =============================================================================
+# Evaluation (post-training / inference)
+# =============================================================================
+# Settings for running eval on exported/loaded models. Affects eval speed and length, not training.
 evaluation:
-  # GGUF model settings (llama-cpp-python)
-  gguf_n_ctx: 2048          # Context window size for GGUF (lower = more stable)
-  gguf_n_batch: 512         # Batch size for prompt processing
+  # gguf_n_ctx: Context window for GGUF inference (llama-cpp). Larger = longer prompts, more RAM.
+  gguf_n_ctx: 2048
+  # gguf_n_batch: Prompt processing batch size in llama-cpp. Larger = faster, more RAM.
+  gguf_n_batch: 512
+  # num_samples: How many examples to run when evaluating. More = more representative metrics, slower.
+  num_samples: 10
+  # max_new_tokens: Cap on generated tokens per eval sample. Affects eval length and time only.
+  max_new_tokens: 200
 
-  # General evaluation settings
-  num_samples: 10           # Number of samples to evaluate
-  max_new_tokens: 200       # Max tokens to generate per sample
-
-# Export Configuration
-# LoRA / merged use Unsloth when available. GGUF uses llama.cpp directly
-# (not Unsloth) for Windows compatibility — Unsloth GGUF often fails on Windows.
+# =============================================================================
+# Export (after training)
+# =============================================================================
+# What to save: LoRA weights, full merged model, and/or GGUF. LoRA/merged use Unsloth; GGUF uses llama.cpp (Windows-friendly).
 export:
-  export_lora: false        # Save LoRA adapter (recommended)
-  export_merged: false      # Merge and save 16-bit model
-  export_gguf: true        # GGUF via llama.cpp (Windows-friendly)
+  # export_lora: Save LoRA adapter only (small, can be merged later). Recommended for sharing/versioning.
+  export_lora: false
+  # export_merged: Merge LoRA into base and save full 16-bit model. Large files; use for standalone deployment.
+  export_merged: false
+  # export_gguf: Export to GGUF (e.g. via llama.cpp) for CPU/low-VRAM inference. Quality depends on quantization.
+  export_gguf: true
+  # gguf_quantization_methods: Which GGUF quants to produce. More bits = better quality, larger files.
+  # Effect: q4_k_m = good quality/size; q5_k_m = better; q8_0 = high quality, large. Does not affect training.
   gguf_quantization_methods:
-    - "q4_k_m"             # 4-bit (recommended)
-    # - "q5_k_m"            # 5-bit (better quality)
-    # - "q8_0"              # 8-bit (high quality)
+    - "q4_k_m"
+    # - "q5_k_m"
+    # - "q8_0"
 
-  # Push to Hugging Face Hub (optional)
+  # Push to Hugging Face Hub (optional). No effect on local accuracy.
   push_to_hub: false
   hub_repo_id: "your-username/your-model-name"
   push_lora: false
   push_merged: false
   push_gguf: false
 
-# Output Configuration
+# =============================================================================
+# Output Directories
+# =============================================================================
+# Where checkpoints and exports are written. No effect on accuracy.
 output:
   base_dir: "outputs"
   checkpoint_dir: "checkpoints"
   export_dir: "exports"
 
-# Full Fine-tuning (not recommended for 12GB VRAM)
+# =============================================================================
+# Full Fine-tuning
+# =============================================================================
+# full_finetuning: true = train all model weights; false = train only LoRA adapters.
+# Effect: true = max capacity and overfitting risk, very high VRAM (usually 24GB+). false = LoRA only, fits 12GB, recommended.
 full_finetuning: false
