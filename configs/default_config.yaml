@@ -43,10 +43,10 @@ quantization:
 lora:
   # r: Rank of LoRA matrices. Higher = more capacity, better fit, more VRAM and overfitting risk.
   # Effect: 8–16 for large models; 32–64 OK for small models like LFM 2.5. Too high → overfit; too low → underfit.
-  r: 32
+  r: 64
   # lora_alpha: Scaling factor for LoRA updates. Effective scale = lora_alpha/r. Often set to 2*r.
   # Effect: alpha=r → scale 1; alpha=2*r → stronger adapter influence. Too high → unstable; too low → weak learning.
-  lora_alpha: 32
+  lora_alpha: 16
   # lora_dropout: Dropout applied to LoRA activations. 0 is standard and usually best for most tasks.
   # Effect: >0 can reduce overfitting on tiny datasets but often hurts accuracy; keep 0 unless you see clear overfit.
   lora_dropout: 0
